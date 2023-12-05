@@ -11,3 +11,7 @@ migrations/
 # Locked Python Dependency Materials
 Pipfile.lock
 */Pipfile.lock
+
+# Environment Variables
+.env
+*/.env
