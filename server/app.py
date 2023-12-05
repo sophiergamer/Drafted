@@ -193,11 +193,11 @@ if __name__ == "__main__":
 
 
 # address = '566 45th Street, Brooklyn, NY, 11220'
-# api_key = 'AIzaSyABmGaHJ6lDIFPjrYQyfsSa2UCw5zKhPhA'
+
 
 # @app.get('/get_rep_info')
 # def get_rep_info():
-#     api_key = 'AIzaSyABmGaHJ6lDIFPjrYQyfsSa2UCw5zKhPhA'
+
 #     address = '566 45th Street, Brooklyn, NY, 11220'
 #     url = f'https://www.googleapis.com/civicinfo/v2/representatives?key={api_key}&address={address}'
 
