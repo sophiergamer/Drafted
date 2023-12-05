@@ -1,0 +1,71 @@
+{"officials": [
+    {
+      "name": "Alexa Aviles",
+
+      "party": "Democratic",
+  
+      "photoUrl": "string",
+
+      "emails": [
+        "string"
+      ],
+      "channels": [
+        {
+          "type": "string",
+          "id": "string"
+        }
+      ]
+    },
+    {
+        "name": "Marcela Mitaynes",
+  
+        "party": "Democratic",
+    
+        "photoUrl": "string",
+  
+        "emails": [
+          "string"
+        ],
+        "channels": [
+          {
+            "type": "string",
+            "id": "string"
+          }
+        ]
+      },
+      {
+        "name": "Daniel Goldman",
+  
+        "party": "Democratic",
+    
+        "photoUrl": "string",
+  
+        "emails": [
+          "string"
+        ],
+        "channels": [
+          {
+            "type": "string",
+            "id": "string"
+          }
+        ]
+      },
+      {
+        "name": "Charles Schumer",
+  
+        "party": "Democratic",
+    
+        "photoUrl": "string",
+  
+        "emails": [
+          "string"
+        ],
+        "channels": [
+          {
+            "type": "string",
+            "id": "string"
+          }
+        ]
+      }
+]
+}
