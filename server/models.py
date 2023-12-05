@@ -27,7 +27,9 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable= False)
-    email = db.Column(db.String, nullable=False)
+    username = db.Column(db.String, nullable = False, unique = True)
+    password_hash = db.Column(db.String, nullable = False, unique = True)
+    email = db.Column(db.String, nullable=False, unique=True)
     building_number = db.Column(db.String, nullable = False)
     street_name = db.Column(db.String, nullable = False)
     city_name = db.Column(db.String, nullable = False)
@@ -38,13 +40,13 @@ class User(db.Model, SerializerMixin):
     reps = association_proxy("drafted", "rep")
     serialize_rules = ("-drafted.user",)
 
-    @validates("state_code")
-    def validate_state_code(self, key, state_code):
-        if not len(state_code)==2 :
-            raise ValueError("please enter a 2-letter state code")
-        if state_code not in state_codes:
-            raise ValueError("please enter a valid state code")
-        return state_code
+    # @validates("state_code")
+    # def validate_state_code(self, key, state_code):
+    #     if not len(state_code)==2 :
+    #         raise ValueError("please enter a 2-letter state code")
+    #     if state_code not in state_codes:
+    #         raise ValueError("please enter a valid state code")
+    #     return state_code
     
     @validates("zip_code")
     def validate_zip_code(self, key, zip_code):

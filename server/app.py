@@ -1,9 +1,7 @@
 from flask import make_response, jsonify, request, session
-from flask import Flask
-from flask_migrate import Migrate
 from models import db, YourReps, User, Drafts
-# from config import app, db
-# from middleware import authorization_required
+from config import app, db
+from middleware import authorization_required
 # import bcrypt
 
 # Environment variable loading and operational tools.
@@ -19,11 +17,6 @@ auth_token = os.getenv("API_TOKEN")
 #       Thus, you'll need TWO environment variables in your `.env` to load into memory using 
 #       `load_dotenv()` and `os.getenv()`. 
 
-
-app = Flask(__name__)
-migrate = Migrate(app, db)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
-db.init_app(app)
 
 # base route to make sure that things are working
 @app.get("/")
@@ -168,28 +161,20 @@ def remove_rep_from_user(user_id:int):
     rep_id = rep_to_delete_data["rep_id"]
     
     association_to_delete = Drafts.query.filter(user_id == Drafts.user_id and rep_id == Drafts.rep_id)
+    if not association_to_delete:
+        return make_response({"error":"this link does not exist"}, 404)
 
     db.session.delete(association_to_delete)
     db.session.commit()
 
+    return make_response(jsonify(association_to_delete.to_dict(), 200))
 
-    if not rep_to_delete:
-        return make_response({"error":"this representative does not exist"}, 404)
+
+   
     
 
 
     
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -212,14 +197,12 @@ if __name__ == "__main__":
 # def get_rep_info():
 
 #     address = '566 45th Street, Brooklyn, NY, 11220'
-#     url = f'https://www.googleapis.com/civicinfo/v2/representatives?key={api_key}&address={address}'
+#     url = f'https://www.googleapis.com/civicinfo/v2/representatives?key={auth_token}&address={address}'
 
 #     # address = request.args.get('address') 
-
-#     mydata = "http://localhost:3000/officials"
 #     rep_info = request.get_json(url)
 
-#     my_rep_info = YourLocalReps(name = rep_info["name"],
+#     my_rep_info = YourReps(name = rep_info["name"],
 #                                 party = rep_info["party"],
 #                                 social_media = rep_info["social_media"],
 #                                 photo = rep_info["photoUrl"])
