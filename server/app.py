@@ -4,13 +4,11 @@ from config import app, db
 from middleware import authorization_required
 # import bcrypt
 
-# Environment variable loading and operational tools.
 from dotenv import load_dotenv
 import os
 
-# Load environment variables for additional application configuration.
 load_dotenv()
-# Configure application server with custom authentication token.
+
 auth_token = os.getenv("API_TOKEN")
 # NOTE: When implementing authentication, take note that your Google API token (`API_TOKEN`) 
 #       is NOT the same as the secret key you need to set up your authentication capabilities.

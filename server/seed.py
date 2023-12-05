@@ -1,4 +1,4 @@
-from models import db, YourLocalReps, User, Drafts
+from models import db, YourReps, User, Drafts
 from config import app
 import bcrypt
 from flask import request
@@ -15,26 +15,29 @@ def random_image():
 def create_reps():
     pass
 
-def create_user():
+def create_users():
     random_user_data = request.get_json('https://randomuser.me/api/?results=10')
-    random_user = {"name":random_user_data.name,
-                       "email":random_user_data.email,
-                       "building_number":random_user_data.location.street.number,
-                       "street_name":random_user_data.location.street.name,
-                       "city_name":random_user_data.location.city,
-                       "state_code":random_user_data.location.state,
-                       "zip_code":random_user_data.location.postcode} 
-    return random_user
+    random_user_list = []
+    for user in random_user_data:
+        random_user = {"name":user.name.first,
+                       "email":user.email,
+                       "building_number":user.location.street.number,
+                       "street_name":user.location.street.name,
+                       "city_name":user.location.city,
+                       "state_code":user.location.state,
+                       "zip_code":user.location.postcode}
+        random_user_list.append(random_user)
+    return random_user_list
 
 
 
-def create_drafts():
-    pass
+drafts_list = [Drafts(user_id=1, rep_id=1), Drafts(user_id=2, rep_id=2), Drafts(user_id=3, rep_id=3), Drafts(user_id=4, rep_id=4), Drafts(user_id=5, rep_id=5), Drafts(user_id=6, rep_id=6), Drafts(user_id=7, rep_id=7), Drafts(user_id=8, rep_id=8), Drafts(user_id=9, rep_id=9), Drafts(user_id=10, rep_id=10)]
+
 
 with app.app_context():
     reps = create_reps()
     users = create_users()
-    drafts = create_drafts()
+    drafts = drafts_list
 
 
 

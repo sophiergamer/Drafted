@@ -8,7 +8,7 @@ import os
 
 
 app = Flask(__name__)
-db = SQLAlchemy(metadata=metadata)
+db = SQLAlchemy()
 migrate = Migrate(app, db)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 db.init_app(app)
@@ -21,8 +21,6 @@ app.json.compact = False
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
-
-
 
 CORS(app)
 
