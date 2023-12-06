@@ -22,11 +22,11 @@ useEffect(()=>{
 return(
     <div>
         <div>
-            <h1>Hello, world! Here is my app! I am {user.name}</h1>
+            <h1>Hello, world! Here is my app! I am Sophie.</h1>
         </div>
 
         <div>
-            <ul>
+            {/* <ul>
                 {myReps.map(rep=>
                 <RepDisplay key={rep.id}
                             name={rep.name}
@@ -36,7 +36,7 @@ return(
                             photo={rep.photo_url}               
                 />
                 )}
-            </ul>
+            </ul> */}
         </div>
     </div>
 )

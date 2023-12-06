@@ -104,7 +104,6 @@ def match_candidate_search():
     return make_response(jsonify(list_of_candidates), 200)
 
 
-
 # get route to get list of users
 @app.get("/users")
 def get_all_users():
@@ -133,7 +132,7 @@ def add_user():
     new_user = User(name=new_user_data["name"],
                     username=new_user_data["username"],
                     email=new_user_data["email"],
-                    password_hash=encrypt_password(data["password_hash"])
+                    password_hash=encrypt_password(["password_hash"])
                     building_number=new_user_data["building_number"],
                     street_name=new_user_data["street_name"],
                     city_name=new_user_data["city_name"],
@@ -201,9 +200,10 @@ def draft_rep(id:int):
 # helper function to switch between True/False values for "drafted" in YourReps db
 def switch_drafted_value():
     if YourReps.drafted == True:
-        YourReps.drafted == False
+        YourReps.drafted = False
     elif YourReps.drafted == False:
-        YourReps.drafted == True
+        YourReps.drafted = True
+## write toggling function for any boolean  value in database
 
 # patch request that will change the value of "drafted" in the database 
 @app.patch("/representatives/<int:id>")
