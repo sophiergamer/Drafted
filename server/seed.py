@@ -19,13 +19,15 @@ def create_users():
     random_user_data = request.get_json('https://randomuser.me/api/?results=10')
     random_user_list = []
     for user in random_user_data:
-        random_user = {"name":user.name.first,
-                       "email":user.email,
-                       "building_number":user.location.street.number,
-                       "street_name":user.location.street.name,
-                       "city_name":user.location.city,
-                       "state_code":user.location.state,
-                       "zip_code":user.location.postcode}
+        random_user = User(name=user.name.first,
+                       email=user.email,
+                       username= user.login.username,
+                       password_hash=user.login.password,
+                       building_number=user.location.street.number,
+                       street_name=user.location.street.name,
+                       city_name=user.location.city,
+                       state_code=user.location.state,
+                       zip_code=user.location.postcode)
         random_user_list.append(random_user)
     return random_user_list
 

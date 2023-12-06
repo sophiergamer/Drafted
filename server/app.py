@@ -3,6 +3,7 @@ from models import db, YourReps, User, Drafts
 from config import app, db
 from middleware import authorization_required
 import bcrypt
+from sqlalchemy import _and
 
 from dotenv import load_dotenv
 import os
@@ -20,6 +21,44 @@ auth_token = os.getenv("API_TOKEN")
 @app.get("/")
 def home():
     return "Hello World! I hope you are ready to learn about your local electoral politics."
+
+# auth routes begin:
+
+# get current user info
+@app.get("/myaccount")
+@authorization_required
+def get_my_account(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+
+    return make_response(jsonify(logged_in_user.to_dict()),200)
+
+# post for a user to log in
+@app.post("/login")
+def user_login():
+    if request.method == "POST":
+        # Retrieve POST request as JSONified payload.
+        payload = request.get_json()
+
+        # Filter database by username to find matching user to potentially login.
+        matching_user = User.query.filter(User.username.like(f"%{payload['username']}%")).first()
+
+        # Check submitted password against hashed password in database for authentication.
+        AUTHENTICATION_IS_SUCCESSFUL = bcrypt.checkpw(
+            password=payload["password"].encode("utf-8"),
+            hashed_password=matching_user.password_hash.encode("utf-8")
+        )
+
+        if matching_user is not None and AUTHENTICATION_IS_SUCCESSFUL:
+            # Save authenticated user ID to server-persistent session storage.
+            # NOTE: Sessions are to servers what cookies are to clients.
+            # NOTE: Server sessions are NOT THE SAME as database sessions! (`session != db.session`)
+            session["user_id"] = matching_user.id
+
+            return make_response(matching_user.to_dict(only=("id", "username")), 200)
+        else:
+            return make_response({"error": "Invalid username or password. Try again."}, 401)
+    else:
+        return make_response({"error": f"Invalid request type. (Expected POST; received {request.method}.)"}, 400)
 
 
 # function to check user id against database
@@ -55,7 +94,14 @@ def get_free_reps():
     return make_response(jsonify(free_reps_list), 200)
 
 # post route to search through the json file with the search criteria and return only matching candidates
-@app.post()
+@app.post("/candidateSearch")
+def match_candidate_search():
+    searched_item = request.get_json()
+    state_code, district_number = searched_item["state_code"], searched_item["district_number"]
+    filtered_list = YourReps.query.filter(_and(state_code==YourReps.state_code, district_number==YourReps.district_number)).all()
+    list_of_candidates = [candidate.to_dict() for candidate in filtered_list]
+
+    return make_response(jsonify(list_of_candidates), 200)
 
 
 
@@ -77,9 +123,17 @@ def get_user_by_id(id:int):
 # post route to add user
 @app.post("/users")
 def add_user():
+    def encrypt_password(password):
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt=salt)
+        return hashed_password.decode("utf-8")
+
+
     new_user_data = request.get_json()
     new_user = User(name=new_user_data["name"],
+                    username=new_user_data["username"],
                     email=new_user_data["email"],
+                    password_hash=encrypt_password(data["password_hash"])
                     building_number=new_user_data["building_number"],
                     street_name=new_user_data["street_name"],
                     city_name=new_user_data["city_name"],
@@ -89,7 +143,7 @@ def add_user():
     db.session.add_all(new_user)
     db.session.commit()
 
-    return make_response(jsonify(new_user), 201)
+    return make_response(jsonify(new_user.to_dict()), 201)
 
 # post route to add representative
 @app.post("/representatives")
@@ -100,6 +154,7 @@ def add_representative():
                        party=new_rep_data["party"],
                        social_media=new_rep_data["social_media"],
                        photo_url=new_rep_data["photo_url"]
+                    
                        )
     
     db.session.add_all(new_rep)
@@ -116,6 +171,13 @@ def show_drafted_reps(id):
     reps = [rep.to_dict(rules=("-drafted",)) for rep in this_user.reps]
 
     return make_response(jsonify(reps), 200)
+
+@app.get("/myaccount/draftedcandidates")
+@authorization_required
+def get_user_candidates(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    candidates = [candidate.to_dict() for candidate in logged_in_user.drafts]
+    return make_response(jsonify(candidates), 200)
 
 # post route to associate a rep to a user
 @app.post("/users/<int:id>/myreps")
