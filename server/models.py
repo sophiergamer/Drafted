@@ -13,13 +13,22 @@ class YourReps(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
     office_held = db.Column(db.String)
+    state = db.Column(db.String)
+    district_number = db.Column(db.Integer)
     party = db.Column(db.String)
     social_media = db.Column(db.String)
     photo_url = db.Column(db.String)
+    seat_status = db.Column(db.String)
     drafted = db.Column(db.Boolean, default=False)
 
     drafted = db.relationship("Drafts", back_populates="rep")
     users = association_proxy("drafted", 'user')
+
+    @validates("seat_status")
+    def validate_seat_status(self, key, seat_status):
+        options=["INCUMBENT", "CHALLENDER", "OPEN"]
+        if seat_status not in options:
+            raise ValueError("this seat status is not valid")
 
 
 class User(db.Model, SerializerMixin):

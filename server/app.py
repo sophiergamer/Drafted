@@ -2,7 +2,7 @@ from flask import make_response, jsonify, request, session
 from models import db, YourReps, User, Drafts
 from config import app, db
 from middleware import authorization_required
-# import bcrypt
+import bcrypt
 
 from dotenv import load_dotenv
 import os
@@ -53,6 +53,11 @@ def get_free_reps():
     free_reps_list = [rep.to_dict() for rep in free_reps]
 
     return make_response(jsonify(free_reps_list), 200)
+
+# post route to search through the json file with the search criteria and return only matching candidates
+@app.post()
+
+
 
 # get route to get list of users
 @app.get("/users")
