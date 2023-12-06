@@ -1,5 +1,5 @@
 'use client'
-import RepDisplay from "@/app/dashboard/RepDisplay";
+import RepDisplay from "@/app/dashboard/RepRoster/EditRoster/layout.js/RepDisplay";
 import {useState} from 'react'
 
 

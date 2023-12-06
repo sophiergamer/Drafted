@@ -1,6 +1,5 @@
 'use client'
 import {useState, useEffect} from 'react'
-import RepDisplay from './RepDisplay'
 
 export default function Home() {
 const [user, setUser] = useState({})
@@ -22,7 +21,7 @@ useEffect(()=>{
 return(
     <div>
         <div>
-            <h1>Hello, world! Here is my app! I am Sophie.</h1>
+            
         </div>
 
         <div>
