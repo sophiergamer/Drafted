@@ -22,6 +22,11 @@ auth_token = os.getenv("API_TOKEN")
 def home():
     return "Hello World! I hope you are ready to learn about your local electoral politics."
 
+# New route to say hi to Kash
+@app.get("/kash")
+def hi():
+    return {"msg": "Hi Kash"}
+
 # auth routes begin:
 
 # get current user info
