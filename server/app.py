@@ -132,7 +132,7 @@ def add_user():
     new_user = User(name=new_user_data["name"],
                     username=new_user_data["username"],
                     email=new_user_data["email"],
-                    password_hash=encrypt_password(["password_hash"])
+                    password_hash=encrypt_password(new_user_data["password"]),
                     building_number=new_user_data["building_number"],
                     street_name=new_user_data["street_name"],
                     city_name=new_user_data["city_name"],
