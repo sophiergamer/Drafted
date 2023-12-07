@@ -1,0 +1,17 @@
+# Database Stuffs
+instance/
+*/instance/
+migrations/
+*/migrations/
+
+# Virtual Environment Stuffs
+.venv/
+*/.venv/
+
+# Locked Python Dependency Materials
+Pipfile.lock
+*/Pipfile.lock
+
+# Environment Variables
+.env
+*/.env

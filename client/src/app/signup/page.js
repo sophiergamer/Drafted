@@ -11,24 +11,39 @@ function handleSignUp(event){
     setSignUp({...signUp, [event.target.name]: event.target.value})
 }
 
-const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email, 
-    address:{building_number:signUp.building_number, street_name:signUp.building_number,
-    city_name:signUp.city_name, state_code:signUp.state_code, zip_code:signUp.zip_code}}
+const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email, building_number:signUp.building_number, street_name:signUp.building_number,
+    city_name:signUp.city_name, state_code:signUp.state_code, zip_code:signUp.zip_code}
 
 function signUpUser(event){
     event.preventDefault();
-    fetch("/users", {
+
+    fetch("/api/users", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(newUserData)}
-    ).then(response=>response.json())
-    .then(
-    setSignUp({name:"", username:"", password:"", email:"", 
-    building_number:"", street_name:"",city_name:"", state_code:"", zip_code:""}))
+    )
+    .then(response=>response.json())
+    .then(data => {
+        console.log(data)
+        setSignUp({
+            name:"", 
+            username:"", 
+            password:"", 
+            email:"", 
+            building_number:"", 
+            street_name:"",
+            city_name:"", 
+            state_code:"", 
+            zip_code:""
+        })
+    })
 }
 
-const state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MP", "MS", "MT", "NC", "ND", "NE", "NH", "NJ","NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UM", "UT", "VA", "VI", "VT", "WA", "WI", "WV", "WY"]
 
+const state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "GU", "HI", "IA", "ID", "IL", "IN",
+                    "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MP", "MS", "MT", "NC", "ND", "NE", "NH", "NJ","NM", "NV", 
+                    "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UM", "UT", "VA", "VI", "VT", "WA", "WI", "WV",
+                     "WY"]
 
 return(
 <div>
@@ -68,7 +83,7 @@ return(
         <label>Zip Code</label>
         <input type='text' name="zip_code" value={newUserData.zip_code} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <button className="p-2 w-m m-4  font-medium rounded-lg text-sm text-center" type="submit">Submit</button>
+        <button className="p-2 w-m m-4 border-1 border-black font-medium rounded-lg text-sm text-center" type="submit"><Link href="/login">Sign Up for Drafted</Link></button>
     </form>
     </div>
 </div>

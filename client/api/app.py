@@ -1,7 +1,7 @@
 from flask import make_response, jsonify, request, session
-from client.api.models import db, YourReps, User, Drafts
-from client.api.config import app, db
-from client.api.middleware import authorization_required
+from models import db, YourReps, User, Drafts
+from config import app, db
+from middleware import authorization_required
 import bcrypt
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -18,45 +18,13 @@ auth_token = os.getenv("API_TOKEN")
 #       `load_dotenv()` and `os.getenv()`. 
 
 
-# base route to make sure that things are working
-@app.get("/")
+#######################################################################
+## ROUTES NOT PERTAINING TO AUTH/ HAVE NOT BEEN MOVED TO REQUIRE AUTH##
+#######################################################################
+
+@app.get("/api")
 def home():
     return "Hello World! I hope you are ready to learn about your local electoral politics."
-
-# auth routes begin:
-
-# get current user info
-@app.get("/myaccount")
-@authorization_required
-def get_my_account(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-
-    return make_response(jsonify(logged_in_user.to_dict()),200)
-
-# post for a user to log in
-@app.post("/login")
-def user_login():
-    if request.method == "POST":
-        payload = request.get_json()
-        matching_user = User.query.filter(User.username.like(f"%{payload['username']}%")).first()
-
-        # Check submitted password against hashed password in database for authentication.
-        AUTHENTICATION_IS_SUCCESSFUL = bcrypt.checkpw(
-            password=payload["password"].encode("utf-8"),
-            hashed_password=matching_user.password_hash.encode("utf-8")
-        )
-        if matching_user is not None and AUTHENTICATION_IS_SUCCESSFUL:
-            # Save authenticated user ID to server-persistent session storage.
-            # NOTE: Sessions are to servers what cookies are to clients.
-            # NOTE: Server sessions are NOT THE SAME as database sessions! (`session != db.session`)
-            session["user_id"] = matching_user.id
-
-            return make_response(matching_user.to_dict(only=("id", "username", "name")), 200)
-        else:
-            return make_response({"error": "Invalid username or password. Try again."}, 401)
-    else:
-        return make_response({"error": f"Invalid request type. (Expected POST; received {request.method}.)"}, 400)
-
 
 # function to check user id against database
 def check_user_id(id:int):
@@ -68,7 +36,7 @@ def check_rep_id(id:int):
     return this_rep
 
 # get route to see list of reps
-@app.get("/representatives")
+@app.get("/api/representatives")
 def get_all_reps():
     reps = YourReps.query.all()
     rep_list = [rep.to_dict() for rep in reps]
@@ -76,14 +44,15 @@ def get_all_reps():
     return make_response(jsonify(rep_list), 200)
 
 # get route to get a rep by id
-@app.get("/representatives/<int:id>")
+@app.get("/api/representatives/<int:id>")
 def get_rep_by_id(id):
     this_rep = check_rep_id(id)
 
     return make_response(jsonify(this_rep.to_dict()), 200)
 
+
 # get route for reps that ARE AVAILABLE to draft
-@app.get("/representatives/available")
+@app.get("/api/representatives/available")
 def get_free_reps():
     free_reps = YourReps.query.filter(YourReps.drafted == False).all()
     free_reps_list = [rep.to_dict() for rep in free_reps]
@@ -91,7 +60,7 @@ def get_free_reps():
     return make_response(jsonify(free_reps_list), 200)
 
 # post route to search through the json file with the search criteria and return only matching candidates
-@app.post("/candidateSearch")
+@app.post("/api/candidateSearch")
 def match_candidate_search():
     searched_item = request.get_json()
     state_code, district_number = searched_item["state_code"], searched_item["district_number"]
@@ -100,9 +69,8 @@ def match_candidate_search():
 
     return make_response(jsonify(list_of_candidates), 200)
 
-
 # get route to get list of users
-@app.get("/users")
+@app.get("/api/users")
 def get_all_users():
     users = User.query.all()
     user_list = [user.to_dict() for user in users]
@@ -110,14 +78,14 @@ def get_all_users():
     return make_response(jsonify(user_list), 200)
 
 # get route to get user by id
-@app.get("/users/<int:id>")
+@app.get("/api/users/<int:id>")
 def get_user_by_id(id:int):
     this_user = check_user_id(id)
 
     return make_response(jsonify(this_user.to_dict()), 200)
 
 # post route to add user
-@app.post("/users")
+@app.post("/api/users")
 def add_user():
     def encrypt_password(password):
         salt = bcrypt.gensalt()
@@ -140,13 +108,12 @@ def add_user():
     
     print(f"\n\nNew User: {new_user}\n\n")
     
-    db.session.add_all(new_user)
+    db.session.add(new_user)
     db.session.commit()
-
     return make_response(jsonify(new_user.to_dict()), 201)
 
 # post route to add representative
-@app.post("/representatives")
+@app.post("/api/representatives")
 def add_representative():
     new_rep_data = request.get_json()
     new_rep = YourReps(name=new_rep_data["name"],
@@ -163,7 +130,7 @@ def add_representative():
     return make_response(jsonify(new_rep), 201)
 
 # get route to show a user's drafted representatives
-@app.get("/users/<int:id>/myreps")
+@app.get("/api/users/<int:id>/myreps")
 def show_drafted_reps(id):
     this_user = check_user_id(id)
     if not this_user:
@@ -172,15 +139,8 @@ def show_drafted_reps(id):
 
     return make_response(jsonify(reps), 200)
 
-@app.get("/myaccount/draftedcandidates")
-@authorization_required
-def get_user_candidates(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-    candidates = [candidate.to_dict() for candidate in logged_in_user.drafts]
-    return make_response(jsonify(candidates), 200)
-
 # post route to associate a rep to a user
-@app.post("/users/<int:id>/myreps")
+@app.post("/api/users/<int:id>/myreps")
 def draft_rep(id:int):
     this_user = check_user_id(id)
     if not this_user:
@@ -207,7 +167,7 @@ def switch_drafted_value():
 ## write toggling function for any boolean  value in database
 
 # patch request that will change the value of "drafted" in the database 
-@app.patch("/representatives/<int:id>")
+@app.patch("/api/representatives/<int:id>")
 def change_drafted_status(id:int):
     drafted_rep = check_rep_id(id)
     if not drafted_rep:
@@ -217,7 +177,7 @@ def change_drafted_status(id:int):
     db.session.add(drafted_rep)
 
 # delete request to remove the association between a user and a rep, when trading back to list
-@app.delete("/users/<int:user_id>/myreps")
+@app.delete("/api/users/<int:user_id>/myreps")
 def remove_rep_from_user(user_id:int):
     this_user = check_user_id(user_id)
     if not this_user:
@@ -236,46 +196,70 @@ def remove_rep_from_user(user_id:int):
     return make_response(jsonify(association_to_delete.to_dict(), 200))
 
 
-   
+#######################################################################
+                    ## ROUTES PERTAINING TO AUTH##
+#######################################################################
+
+# get current user info
+@app.get("/api/myaccount")
+@authorization_required
+def get_my_account(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+
+    return make_response(jsonify(logged_in_user.to_dict()),200)
+
+# post for a user to log in
+@app.post("/api/login")
+def user_login():
+    if request.method == "POST":
+        payload = request.get_json()
+        matching_user = User.query.filter(User.username.like(f"%{payload['username']}%")).first()
+
+        # Check submitted password against hashed password in database for authentication.
+        AUTHENTICATION_IS_SUCCESSFUL = bcrypt.checkpw(
+            password=payload["password"].encode("utf-8"),
+            hashed_password=matching_user.password_hash.encode("utf-8")
+        )
+        if matching_user is not None and AUTHENTICATION_IS_SUCCESSFUL:
+            # Save authenticated user ID to server-persistent session storage.
+            # NOTE: Sessions are to servers what cookies are to clients.
+            # NOTE: Server sessions are NOT THE SAME as database sessions! (`session != db.session`)
+            session["user_id"] = matching_user.id
+
+            return make_response(matching_user.to_dict(only=("id", "username", "name")), 200)
+        else:
+            return make_response({"error": "Invalid username or password. Try again."}, 401)
+    else:
+        return make_response({"error": f"Invalid request type. (Expected POST; received {request.method}.)"}, 400)
     
+#patch route for a user to edit their account once created
+@app.patch("/api/myaccount")
+@authorization_required
+def edit_account_info(current_user):
+    edited_user = User.query.get(current_user["id"])
+    changes = request.get_json()
+    for key in changes:
+        setattr(edited_user, key, changes[key])
+
+    db.session.add(edited_user)
+    db.session.commit()
+
+    return make_response(jsonify(edited_user.to_dict()), 200)
 
 
-    
+# get route for showing the candidates drafted by a logged-in user
+@app.get("/api/myaccount/draftedcandidates")
+@authorization_required
+def get_user_candidates(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    candidates = [candidate.to_dict() for candidate in logged_in_user.drafts]
+    return make_response(jsonify(candidates), 200)
 
+@app.delete("/api/logout")
+def user_logout():
+    if request.method == "DELETE":
+        session["user_id"] = None
 
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    app.run(host="127.0.0.1",port=8000 ,debug=True)
-
-
-
-
-# address = '566 45th Street, Brooklyn, NY, 11220'
-
-
-# @app.get('/get_rep_info')
-# def get_rep_info():
-
-#     address = '566 45th Street, Brooklyn, NY, 11220'
-#     url = f'https://www.googleapis.com/civicinfo/v2/representatives?key={auth_token}&address={address}'
-
-#     # address = request.args.get('address') 
-#     rep_info = request.get_json(url)
-
-#     my_rep_info = YourReps(name = rep_info["name"],
-#                                 party = rep_info["party"],
-#                                 social_media = rep_info["social_media"],
-#                                 photo = rep_info["photoUrl"])
-                   
-#     db.session.add(my_rep_info)
-#     db.session.commit()
-
-#     return make_response(jsonify(my_rep_info.to_dict()),200)
-
-# @app.route("/")
+        return make_response({"msg": "User successfully logged out."}, 204)
+    else:
+        return make_response({"error": f"Invalid request type. (Expected DELETE; received {request.method}.)"}, 400)

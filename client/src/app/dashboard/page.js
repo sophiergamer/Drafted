@@ -1,5 +1,7 @@
 'use client'
 import {useState, useEffect} from 'react'
+import LogOut from './logout/page'
+import Link from 'next/link'
 
 export default function Home() {
 const [user, setUser] = useState({})
@@ -21,7 +23,20 @@ useEffect(()=>{
 return(
     <div>
         <div>
-            
+        <span className="flex-col h-screen sticky items-center tracking-wide">
+  
+  <ul className="flex gap-4">
+    <li>
+      <Link href="/leagueinfo">My Leagues</Link>
+    </li>
+    <li>
+      <Link href="/reproster">My Rosters</Link>
+    </li>
+    <li>
+      <LogOut/>
+    </li>
+  </ul>
+</span>
         </div>
 
         <div>
