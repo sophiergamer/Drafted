@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function Home() {
 const [user, setUser] = useState({})
-const [myReps, setMyReps] = useState([])
+
 
 
 useEffect(()=>{
@@ -14,11 +14,6 @@ useEffect(()=>{
     .then(data=>setUser(data))
 },[])
 
-useEffect(()=>{
-    fetch("/users/id/representatives")
-    .then(response=>response.json())
-    .then(data=>setMyReps(data))
-})
 
 return(
     <div>

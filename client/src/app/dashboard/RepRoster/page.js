@@ -1,15 +1,16 @@
 'use client'
 import {useState, useEffect} from 'react'
 
-export default function MyReps(){
+export default function MyRoster(){
 
-const [myReps, setMyReps] = useState([])
+const [myDraft, setMyDraft] = useState([])
 
 useEffect(()=>{
-    fetch(`/users/{user.id}/representatives`)
-    .then(response=> response.json())
-    .then(data=> setMyReps(data))
-},[])
+    fetch()
+})
+
+
+
 
 
 

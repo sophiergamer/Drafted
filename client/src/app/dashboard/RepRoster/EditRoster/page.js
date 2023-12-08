@@ -1,11 +1,11 @@
 'use client'
-import RepDisplay from "@/app/dashboard/RepRoster/EditRoster/layout.js/RepDisplay";
+import RepDisplay from "@/app/dashboard/RepRoster/RepDisplay/page";
 import {useState} from 'react'
 
 
 
 export default function EditRoster(){
-const [searchInfo, setSearchInfo] = useState({state_code:"", district_number:""})
+const [searchInfo, setSearchInfo] = useState({state_code:"", name:""})
 const [searchResults, setSearchResults] = useState([])
 
 function handleForm(event){
@@ -13,7 +13,7 @@ function handleForm(event){
     setSearchInfo({...searchInfo, [event.target.name]: event.target.value})
 }
 
-newSearch={state_code:searchInfo.state_code, district_number:searchInfo.district_number}
+newSearch={state_code:searchInfo.state_code, name:searchInfo.name}
 
 function searchCandidates(event){
     event.preventDefault();
@@ -30,10 +30,10 @@ return(
 <div>
     <h5>Search for Candidates</h5>
     <form onSubmit={searchCandidates}>
-        <label>Your State's Abbreviation:</label>
-        <input type="text" name="state_code" value="" placeholder="CA, NY, FL eg." onChange={handleForm}/>
-        <label>Your District Number (look it up <a href="https://www.census.gov/mycd/">here</a>:):</label>
-        <input type="number" name="district_number" value="" onChange={handleForm}/>
+        <label>State's Abbreviation:</label>
+        <input type="text" name="state_code" value={searchInfo.state_code} placeholder="CA, NY, FL eg." onChange={handleForm}/>
+        <label>Candidate Name:</label>
+        <input type="text" name="name" value={searchInfo.name} onChange={handleForm}/>
     </form>
     <div>
         <h3>Candidates in this District:</h3>

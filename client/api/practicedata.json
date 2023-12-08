@@ -1,0 +1,112 @@
+[
+    {
+        "Link_Image": "https://www.fec.gov/data/candidate/H4WA08139/?cycle=2024",
+        "name": "CARMEN, GOERS",
+        "id": "H4WA08139",
+        "office_held": "H",
+        "state": "WA",
+        "district_number": 8,
+        "party": "REP",
+        "seat_status": "CHALLENGER"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H4WI03177/?cycle=2024",
+        "name": "NYTES, AARON",
+        "id": "H4WI03177",
+        "office_held": "H",
+        "state": "WI",
+        "district_number": 3,
+        "party": "DEM",
+        "seat_status": "CHALLENGER"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2MO08091/?cycle=2024",
+        "name": "MCCALLIAN, RANDI MCCALLIAN",
+        "id": "H2MO08091",
+        "office_held": "H",
+        "state": "MO",
+        "district_number": 8,
+        "party": "DEM",
+        "seat_status": "CHALLENGER"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2IA03119/?cycle=2024",
+        "name": "NUNN, ZACH",
+        "id": "H2IA03119",
+        "office_held": "H",
+        "state": "IA",
+        "district_number": 3,
+        "party": "REP",
+        "seat_status": "INCUMBENT"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2ID01192/?cycle=2024",
+        "name": "PETERSON, KAYLEE JADE",
+        "id": "H2ID01192",
+        "office_held": "H",
+        "state": "ID",
+        "district_number": 1,
+        "party": "DEM",
+        "seat_status": "CHALLENGER"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2IL02172/?cycle=2024",
+        "name": "KELLY, ROBIN",
+        "id": "H2IL02172",
+        "office_held": "H",
+        "state": "IL",
+        "district_number": 2,
+        "party": "DEM",
+        "seat_status": "INCUMBENT"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2IL10068/?cycle=2024",
+        "name": "SCHNEIDER, BRADLEY S.",
+        "id": "H2IL10068",
+        "office_held": "H",
+        "state": "IL",
+        "district_number": 10,
+        "party": "DEM",
+        "seat_status": "INCUMBENT"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H2IL17147/?cycle=2024",
+        "name": "SORENSEN, ERIC",
+        "id": "H2IL17147",
+        "office_held": "H",
+        "state": "IL",
+        "district_number": 17,
+        "party": "DEM",
+        "seat_status": "INCUMBENT"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H4MT02064/?cycle=2024",
+        "name": "KRAUTTER, JOEL",
+        "id": "H4MT02064",
+        "office_held": "H",
+        "state": "MT",
+        "district_number": 2,
+        "party": "REP",
+        "seat_status": "CHALLENGER"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/H4NC10047/?cycle=2024",
+        "name": "MCHENRY, PATRICK TIMOTHY",
+        "id": "H4NC10047",
+        "office_held": "H",
+        "state": "NC",
+        "district_number": 10,
+        "party": "REP",
+        "seat_status": "INCUMBENT"
+      },
+      {
+        "Link_Image": "https://www.fec.gov/data/candidate/P40013955/?cycle=2024",
+        "name": "AYALA, ROBERT CARLOS",
+        "id": "P40013955",
+        "office_held": "P",
+        "state": "US",
+        "district_number": 0,
+        "party": "DEM",
+        "seat_status": "CHALLENGER"
+      }
+]

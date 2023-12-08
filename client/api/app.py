@@ -1,5 +1,5 @@
 from flask import make_response, jsonify, request, session
-from models import db, YourReps, User, Drafts, League, Member
+from models import db, Reps, User, Drafts, League, Member, Team
 from config import app, db
 from middleware import authorization_required
 import bcrypt
@@ -32,13 +32,13 @@ def check_user_id(id:int):
     return this_user
 # function to check rep id against database
 def check_rep_id(id:int):
-    this_rep = YourReps.query.filter(id == YourReps.id).first()
+    this_rep = Reps.query.filter(id == Reps.id).first()
     return this_rep
 
 # get route to see list of reps
 @app.get("/api/representatives")
 def get_all_reps():
-    reps = YourReps.query.all()
+    reps = Reps.query.all()
     rep_list = [rep.to_dict() for rep in reps]
 
     return make_response(jsonify(rep_list), 200)
@@ -54,7 +54,7 @@ def get_rep_by_id(id):
 # get route for reps that ARE AVAILABLE to draft
 @app.get("/api/representatives/available")
 def get_free_reps():
-    free_reps = YourReps.query.filter(YourReps.drafted == False).all()
+    free_reps = Reps.query.filter(Reps.drafted == False).all()
     free_reps_list = [rep.to_dict() for rep in free_reps]
 
     return make_response(jsonify(free_reps_list), 200)
@@ -63,8 +63,8 @@ def get_free_reps():
 @app.post("/api/candidateSearch")
 def match_candidate_search():
     searched_item = request.get_json()
-    state_code, district_number = searched_item["state_code"], searched_item["district_number"]
-    filtered_list = YourReps.query.filter(state_code==YourReps.state_code, district_number==YourReps.district_number).all()
+    state_code, name = searched_item["state_code"], searched_item["name"]
+    filtered_list = Reps.query.filter(state_code==Reps.state_code, Reps.name.like(name))
     list_of_candidates = [candidate.to_dict() for candidate in filtered_list]
 
     return make_response(jsonify(list_of_candidates), 200)
@@ -116,12 +116,10 @@ def add_user():
 @app.post("/api/representatives")
 def add_representative():
     new_rep_data = request.get_json()
-    new_rep = YourReps(name=new_rep_data["name"],
+    new_rep = Reps(name=new_rep_data["name"],
                        office_held=new_rep_data["office_held"],
                        party=new_rep_data["party"],
-                       social_media=new_rep_data["social_media"],
                        photo_url=new_rep_data["photo_url"]
-                    
                        )
     
     db.session.add_all(new_rep)
@@ -166,7 +164,7 @@ def draft_rep(id:int):
     
     drafted_rep_data = request.get_json()
     rep_id = drafted_rep_data["rep_id"]
-    desired_rep = YourReps.query.filter(rep_id == YourReps.id).first()
+    desired_rep = Reps.query.filter(rep_id == Reps.id).first()
     if not desired_rep:
         return make_response({"error":"this representative does not exist"}, 404)
     drafted_rep = Drafts(rep_id=drafted_rep_data['rep_id'])
@@ -176,12 +174,12 @@ def draft_rep(id:int):
 
     return make_response(jsonify(drafted_rep.to_dict(rules="-drafted",)), 201)
 
-# helper function to switch between True/False values for "drafted" in YourReps db
+# helper function to switch between True/False values for "drafted" in Reps db
 def switch_drafted_value():
-    if YourReps.drafted == True:
-        YourReps.drafted = False
-    elif YourReps.drafted == False:
-        YourReps.drafted = True
+    if Reps.drafted == True:
+        Reps.drafted = False
+    elif Reps.drafted == False:
+        Reps.drafted = True
 ## write toggling function for any boolean  value in database
 
 # patch request that will change the value of "drafted" in the database 

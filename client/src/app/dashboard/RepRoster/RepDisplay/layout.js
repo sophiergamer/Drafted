@@ -1,6 +1,6 @@
 
 
-export default function RepRosterLayout({ children }) {
+export default function RepDisplayLayout({ children }) {
 
     return(
     <div>

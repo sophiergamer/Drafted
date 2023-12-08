@@ -8,31 +8,6 @@ from config import db
 
 state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MP", "MS", "MT", "NC", "ND", "NE", "NH", "NJ","NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UM", "UT", "VA", "VI", "VT", "WA", "WI", "WV", "WY"]
 
-class YourReps(db.Model, SerializerMixin):
-    __tablename__ ='your_reps_table'
-    
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String)
-    office_held = db.Column(db.String)
-    state = db.Column(db.String)
-    district_number = db.Column(db.Integer)
-    party = db.Column(db.String)
-    social_media = db.Column(db.String)
-    photo_url = db.Column(db.String)
-    seat_status = db.Column(db.String)
-    drafted = db.Column(db.Boolean, default=False)
-
-    drafted = db.relationship("Drafts", back_populates="rep")
-    users = association_proxy("drafted", 'user')
-
-    serialize_rules=("-drafts.rep",)
-
-    @validates("seat_status")
-    def validate_seat_status(self, key, seat_status):
-        options=["INCUMBENT", "CHALLENDER", "OPEN"]
-        if seat_status not in options:
-            raise ValueError("this seat status is not valid")
-
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users_table"
@@ -46,7 +21,7 @@ class User(db.Model, SerializerMixin):
     street_name = db.Column(db.String, nullable = False)
     city_name = db.Column(db.String, nullable = False)
     state_code = db.Column(db.String, nullable = False)
-    zip_code = db.Column(db.Integer, nullable = False)
+    zip_code = db.Column(db.String, nullable = False)
 
     drafted = db.relationship("Drafts", back_populates = "user")
     reps = association_proxy("drafted", "rep")
@@ -66,24 +41,38 @@ class User(db.Model, SerializerMixin):
     #         raise ValueError("please enter a valid state code")
     #     return state_code
     
-    @validates("zip_code")
-    def validate_zip_code(self, key, zip_code):
-        if not len(zip_code) == 5:
-            raise ValueError("please enter a 5-digit zip code")
-        return zip_code
+    # @validates("zip_code")
+    # def validate_zip_code(self, key, zip_code):
+    #     if not len(zip_code) == 5:
+    #         raise ValueError("please enter a 5-digit zip code")
+    #     return zip_code
 
-
-class Drafts(db.Model, SerializerMixin):
-    __tablename__ = "users_drafted_politicians_table"
-
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))
-    rep_id = db.Column(db. Integer, db.ForeignKey("your_reps_table.id"))
+class Reps(db.Model, SerializerMixin):
+    __tablename__ ='reps_table'
     
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String)
+    office_held = db.Column(db.String)
+    state = db.Column(db.String)
+    district_number = db.Column(db.Integer)
+    party = db.Column(db.String)
+    photo_url = db.Column(db.String)
+    seat_status = db.Column(db.String)
+    drafted = db.Column(db.Boolean, default=False)
 
-    user = db.relationship("User", back_populates="drafted")
-    rep = db.relationship("YourReps", back_populates="drafted")
-    serialize_rules = ("-rep.drafted", "-user.drafted")
+    drafted = db.relationship("Drafts", back_populates="rep")
+    users = association_proxy("drafted", 'user')
+
+    recruited = db.relationship("Team", back_populates = "rep")
+    leagues = association_proxy("recruited", "league")
+
+    serialize_rules=("-drafts.rep", "-recruited.rep")
+
+    @validates("seat_status")
+    def validate_seat_status(self, key, seat_status):
+        options=["INCUMBENT", "CHALLENGER", "OPEN"]
+        if seat_status not in options:
+            raise ValueError("this seat status is not valid")
 
 
 class League(db.Model, SerializerMixin):
@@ -93,9 +82,25 @@ class League(db.Model, SerializerMixin):
     name = db.Column(db.String, unique=True)
 
     joined = db.relationship("Member", back_populates="league")
-    users = association_proxy("joined", 'user')
+    members = association_proxy("joined", 'user')
 
-    serialize_rules=("-joined.league",)
+    recruited = db.relationship("Team", back_populates = "league")
+    reps = association_proxy('recruited', 'rep')
+
+    serialize_rules=("-joined.league", '-recruited.league')
+
+
+class Drafts(db.Model, SerializerMixin):
+    __tablename__ = "users_drafted_politicians_table"
+
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))
+    rep_id = db.Column(db. Integer, db.ForeignKey("reps_table.id"))
+    
+
+    user = db.relationship("User", back_populates="drafted")
+    rep = db.relationship("Reps", back_populates="drafted")
+    serialize_rules = ("-rep.drafted", "-user.drafted")
 
 
 class Member(db.Model, SerializerMixin):
@@ -109,3 +114,15 @@ class Member(db.Model, SerializerMixin):
     user = db.relationship("User", back_populates="joined")
     league = db.relationship("League", back_populates="joined")
     serialize_rules = ("-user.joined", "-league.joined")
+
+
+class Team(db.Model, SerializerMixin):
+    __tablename__ = "teams_table"
+
+    id = db.Column(db.Integer, primary_key = True)
+    league_id = db.Column(db.Integer, db.ForeignKey("league_table.id"))
+    rep_id = db.Column(db.Integer, db.ForeignKey("reps_table.id"))
+
+    league = db.relationship("League", back_populates="recruited")
+    rep = db.relationship("Reps", back_populates = "recruited")
+    serialize_rules=("-league.recruited","-rep.recruited")
