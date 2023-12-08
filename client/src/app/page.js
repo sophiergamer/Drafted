@@ -1,11 +1,9 @@
 
 export default function App(){
 
-  return(
-    <div>
-  <div>
-    <p>Logo</p>
-     </div>
+return(
+<div>
+  <header>Logo</header>
 </div>
   )
 }

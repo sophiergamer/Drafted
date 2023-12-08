@@ -90,7 +90,7 @@ class League(db.Model, SerializerMixin):
     __tablename__="league_table"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
 
     joined = db.relationship("Member", back_populates="league")
     users = association_proxy("joined", 'user')
@@ -104,6 +104,7 @@ class Member(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))   
     league_id = db.Column(db.Integer, db.ForeignKey("league_table.id")) 
+    is_creator = db.Column(db.Boolean, default = False)
 
     user = db.relationship("User", back_populates="joined")
     league = db.relationship("League", back_populates="joined")

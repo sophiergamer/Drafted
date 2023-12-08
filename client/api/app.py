@@ -1,5 +1,5 @@
 from flask import make_response, jsonify, request, session
-from models import db, YourReps, User, Drafts
+from models import db, YourReps, User, Drafts, League, Member
 from config import app, db
 from middleware import authorization_required
 import bcrypt
@@ -129,6 +129,24 @@ def add_representative():
 
     return make_response(jsonify(new_rep), 201)
 
+# get route to show the list of all leagues
+@app.get("/api/leagues")
+def get_all_leagues():
+    leagues = League.query.all()
+    league_list = [league.to_dict() for league in leagues]
+
+    return make_response(jsonify(league_list), 200)
+
+@app.post("/api/leagues")
+def add_a_league():
+    new_league_data = request.get_json()
+    new_league = League(name = new_league_data["name"])
+
+    db.session.add(new_league)
+    db.session.commit()
+
+    return make_response(jsonify(new_league))
+
 # get route to show a user's drafted representatives
 @app.get("/api/users/<int:id>/myreps")
 def show_drafted_reps(id):
@@ -246,15 +264,7 @@ def edit_account_info(current_user):
 
     return make_response(jsonify(edited_user.to_dict()), 200)
 
-
-# get route for showing the candidates drafted by a logged-in user
-@app.get("/api/myaccount/draftedcandidates")
-@authorization_required
-def get_user_candidates(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-    candidates = [candidate.to_dict() for candidate in logged_in_user.drafts]
-    return make_response(jsonify(candidates), 200)
-
+# delete route to log the user out
 @app.delete("/api/logout")
 def user_logout():
     if request.method == "DELETE":
@@ -263,3 +273,56 @@ def user_logout():
         return make_response({"msg": "User successfully logged out."}, 204)
     else:
         return make_response({"error": f"Invalid request type. (Expected DELETE; received {request.method}.)"}, 400)
+    
+
+# get route for showing the candidates drafted by a logged-in user
+@app.get("/api/myaccount/draftedcandidates")
+@authorization_required
+def get_user_candidates(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    candidates = [candidate.to_dict(rules="=drafted") for candidate in logged_in_user.drafts]
+    return make_response(jsonify(candidates), 200)
+
+# post route to create a league AS A USER
+@app.post("/api/myaccount/leagues")
+@authorization_required
+def user_create_league(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    new_league_data = request.get_json()
+
+    new_league = League(name = new_league_data.name)
+    
+    db.session.add(new_league)
+    db.session.commit()
+
+    new_membership = Member(user_id= logged_in_user.id,
+                            league_id = new_league.id,
+                            is_creator = True)
+    
+    db.session.add(new_membership)
+    db.session.commit()
+
+    return make_response(jsonify(new_league.to_dict()), 201)
+
+# post route to join a league
+@app.post("/api/myaccount/joinleague")
+@authorization_required
+def join_league(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    league_data = request.get_json()
+    new_membership = Member(user_id = logged_in_user.id,
+                            league_id = league_data.id,
+                            is_creator = False)
+    db.session.add(new_membership)
+    db.session.commit()
+
+    return make_response(jsonify(new_membership.to_dict()),201)
+
+# get route to show a user's leagues
+@app.get("/api/myaccount/leagues")
+@authorization_required
+def get_users_leagues(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    leagues = [league.to_dict(rules="-joined") for league in logged_in_user.leagues]
+
+    return make_response(jsonify(leagues), 200)
