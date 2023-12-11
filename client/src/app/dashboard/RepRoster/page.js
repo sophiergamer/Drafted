@@ -4,9 +4,8 @@ import {useState, useEffect} from 'react'
 export default function MyRoster(){
 
 
-useEffect(()=>{
-    fetch()
-})
+
+
 
 
 

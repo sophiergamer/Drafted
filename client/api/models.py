@@ -68,7 +68,7 @@ class Reps(db.Model, SerializerMixin):
 
     @validates("seat_status")
     def validate_seat_status(self, key, seat_status):
-        options=["INCUMBENT", "CHALLENGER", "OPEN"]
+        options=["INCUMBENT", "CHALLENGER", "OPEN", ""]
         if seat_status not in options:
             raise ValueError("this seat status is not valid")
         return seat_status
