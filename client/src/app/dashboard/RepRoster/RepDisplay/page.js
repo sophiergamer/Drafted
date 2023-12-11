@@ -1,6 +1,18 @@
 import Image from "next/image"
 
-export default function RepDisplay({name, office_held, state, district_number, seat_status, party, photo}){
+export default function RepDisplay({name, id, office_held, state, district_number, seat_status, party, photo}){
+
+function draftCandidate(event){
+    event.preventDefault();
+    fetch("/api/myaccount/draftedcandidates", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify()
+
+    })
+}
+
+
 return(
     <div>
         <div>
@@ -19,6 +31,7 @@ return(
             <p>district: {district_number}</p>
             <p>seat status: {seat_status}</p>
         </div>
+        <button>Draft this Candidate</button>
     </div>
     )
 }

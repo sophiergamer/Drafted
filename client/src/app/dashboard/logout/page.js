@@ -11,9 +11,9 @@ function logUserOut(event){
 }
 
 return(
-    <button onClick={logUserOut}>
+    <button className="text-sm text-white absolute top-0 right-2 bg-sky-500 hover:bg-sky-600 w-20 p-3 mt-2 rounded-lg text-center"onClick={logUserOut}>
         <Link href="../login">
-        LogOut
+        Log Out
         </Link>
     </button>
 )

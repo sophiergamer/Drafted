@@ -1,22 +1,23 @@
 "use client"
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {useState} from 'react'
 
 export default function SignUp(){
 const [signUp, setSignUp] = useState({name:"", username:"", password:"", email:"", 
-                            building_number:"", street_name:"",city_name:"", state_code:"", zip_code:""})
+                                building_number:"", street_name:"",city_name:"", state_code:"", zip_code:""})
 
 function handleSignUp(event){
     event.preventDefault();
     setSignUp({...signUp, [event.target.name]: event.target.value})
 }
 
-const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email, building_number:signUp.building_number, street_name:signUp.building_number,
+const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email, building_number:signUp.building_number, street_name:signUp.street_name,
     city_name:signUp.city_name, state_code:signUp.state_code, zip_code:signUp.zip_code}
+
+const router = useRouter()
 
 function signUpUser(event){
     event.preventDefault();
-
     fetch("/api/users", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
@@ -36,8 +37,8 @@ function signUpUser(event){
             state_code:"", 
             zip_code:""
         })
-    })
-}
+    router.push("/login")
+    })}
 
 
 const state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "GU", "HI", "IA", "ID", "IL", "IN",
@@ -48,9 +49,9 @@ const state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE",
 return(
 <div>
     <div>
-    <form className="pl-2.5 w-full max-w bg-whiteish border border-slate rounded-lg shadow " onSubmit={signUpUser}>
+    <form className="pl-2.5 w-full max-w bg-whiteish border border-slate-400 rounded-lg shadow " onSubmit={signUpUser}>
       <br/>
-    <h2 className='text-4xl p-2 m-2'>Sign Up</h2>
+    <h2 className='text-4xl p-2 m-2 font-bold'>Sign Up</h2>
         <label className="form-label inline text-base m-2 text-slate">Create a Username</label>
         <input type='text' name="username" value={newUserData.username} onChange={handleSignUp} className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
@@ -83,7 +84,7 @@ return(
         <label>Zip Code</label>
         <input type='text' name="zip_code" value={newUserData.zip_code} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <button className="p-2 w-m m-4 border-1 border-black font-medium rounded-lg text-sm text-center" type="submit"><Link href="/login">Sign Up for Drafted</Link></button>
+        <button className="p-2 w-m m-4 text-white bg-sky-500 hover:bg-sky-600 font-medium rounded-lg text-sm text-center" type="submit">Sign Up</button>
     </form>
     </div>
 </div>

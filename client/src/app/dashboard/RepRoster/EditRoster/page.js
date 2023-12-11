@@ -36,12 +36,18 @@ return(
         <input type="text" name="name" value={searchInfo.name} onChange={handleForm}/>
     </form>
     <div>
-        <h3>Candidates in this District:</h3>
+        <h5>Results:</h5>
         <div>
             {searchResults.map(result=>
                 <RepDisplay key={result.id}
+                            id={result.id}
                             name={result.name}
-                            
+                            office_held={result.office_held}
+                            state={result.state} 
+                            district_number={result.district_number}
+                            seat_status={result.seat_status}
+                            party={result.party}
+                            photo={result.photo_url}
                 />)}
         </div>
     </div>

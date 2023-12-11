@@ -2,6 +2,10 @@
 import {useState, useEffect} from 'react'
 import LogOut from './logout/page'
 import Link from 'next/link'
+import LeagueInfo from './LeagueInfo/page'
+import RepRoster from './RepRoster/page'
+import Image from 'next/image'
+import horizontalDrafted from "../horizontalDrafted.png"
 
 export default function Home() {
 const [user, setUser] = useState({})
@@ -16,36 +20,24 @@ useEffect(()=>{
 
 
 return(
-    <div>
-        <div>
-        <span className="flex-col h-screen sticky items-center tracking-wide">
-  
-  <ul className="flex gap-4">
-    <li>
-      <Link href="/leagueinfo">My Leagues</Link>
-    </li>
-    <li>
-      <Link href="/reproster">My Rosters</Link>
-    </li>
-    <li>
-      <LogOut/>
-    </li>
-  </ul>
-</span>
+    <div >
+        <div >
+              <span className="flex-colitems-center tracking-wide">
+              <ul className="flex gap-4">
+                <li>
+                <Image src={horizontalDrafted}
+                  alt="logo"
+                 height="100"
+                  width="200"/>
+                  <LogOut/>
+                </li>
+              </ul>
+            </span>
         </div>
-
+      <br/>
         <div>
-            {/* <ul>
-                {myReps.map(rep=>
-                <RepDisplay key={rep.id}
-                            name={rep.name}
-                            office={rep.office_held}
-                            party={rep.party}
-                            socials={rep.social_media} 
-                            photo={rep.photo_url}               
-                />
-                )}
-            </ul> */}
+            <LeagueInfo/>
+            <RepRoster/>
         </div>
     </div>
 )

@@ -12,6 +12,8 @@ state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
 class User(db.Model, SerializerMixin):
     __tablename__ = "users_table"
 
+    serialize_rules = ("-drafted.user", "-joined.user")
+
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable= False)
     username = db.Column(db.String, nullable = False, unique = True)
@@ -29,10 +31,6 @@ class User(db.Model, SerializerMixin):
     joined = db.relationship('Member', back_populates = "user")
     leagues = association_proxy("joined", 'league')
 
-
-    serialize_rules = ("-drafted.user", "-joined.user")
-    
-
     # @validates("state_code")
     # def validate_state_code(self, key, state_code):
     #     if not len(state_code)==2 :
@@ -49,6 +47,8 @@ class User(db.Model, SerializerMixin):
 
 class Reps(db.Model, SerializerMixin):
     __tablename__ ='reps_table'
+
+    serialize_rules=("-drafts.rep", "-recruited.rep")
     
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
@@ -66,17 +66,18 @@ class Reps(db.Model, SerializerMixin):
     recruited = db.relationship("Team", back_populates = "rep")
     leagues = association_proxy("recruited", "league")
 
-    serialize_rules=("-drafts.rep", "-recruited.rep")
-
     @validates("seat_status")
     def validate_seat_status(self, key, seat_status):
         options=["INCUMBENT", "CHALLENGER", "OPEN"]
         if seat_status not in options:
             raise ValueError("this seat status is not valid")
+        return seat_status
 
 
 class League(db.Model, SerializerMixin):
     __tablename__="league_table"
+
+    serialize_rules=("-joined.league", "-recruited.league")
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
@@ -87,11 +88,12 @@ class League(db.Model, SerializerMixin):
     recruited = db.relationship("Team", back_populates = "league")
     reps = association_proxy('recruited', 'rep')
 
-    serialize_rules=("-joined.league", '-recruited.league')
 
 
 class Drafts(db.Model, SerializerMixin):
     __tablename__ = "users_drafted_politicians_table"
+
+    serialize_rules = ("-rep.drafted", "-user.drafted")
 
     id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))
@@ -100,11 +102,12 @@ class Drafts(db.Model, SerializerMixin):
 
     user = db.relationship("User", back_populates="drafted")
     rep = db.relationship("Reps", back_populates="drafted")
-    serialize_rules = ("-rep.drafted", "-user.drafted")
-
+    
 
 class Member(db.Model, SerializerMixin):
     __tablename__ = "league_members_table"
+
+    serialize_rules = ("-user.joined", "-league.joined")
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))   
@@ -113,11 +116,12 @@ class Member(db.Model, SerializerMixin):
 
     user = db.relationship("User", back_populates="joined")
     league = db.relationship("League", back_populates="joined")
-    serialize_rules = ("-user.joined", "-league.joined")
 
 
 class Team(db.Model, SerializerMixin):
     __tablename__ = "teams_table"
+
+    serialize_rules=("-league.recruited","-rep.recruited")
 
     id = db.Column(db.Integer, primary_key = True)
     league_id = db.Column(db.Integer, db.ForeignKey("league_table.id"))
@@ -125,4 +129,4 @@ class Team(db.Model, SerializerMixin):
 
     league = db.relationship("League", back_populates="recruited")
     rep = db.relationship("Reps", back_populates = "recruited")
-    serialize_rules=("-league.recruited","-rep.recruited")
+    

@@ -14,7 +14,7 @@ def random_image():
     return random_photo_url
 
 def create_reps():
-    file = "./practicedata.json"
+    file = "./candidateData.json"
     rep_list= []
     with open(file) as json_data:
         reps = json.load(json_data)
@@ -49,19 +49,34 @@ def create_users():
         random_user_list.append(random_user)
     return random_user_list
 
-drafts_list = [Drafts(user_id=1, rep_id=1), Drafts(user_id=2, rep_id=2), Drafts(user_id=3, rep_id=3), Drafts(user_id=4, rep_id=4), Drafts(user_id=5, rep_id=5), Drafts(user_id=6, rep_id=6), Drafts(user_id=7, rep_id=7), Drafts(user_id=8, rep_id=8), Drafts(user_id=9, rep_id=9), Drafts(user_id=10, rep_id=10)]
+drafts_list = [Drafts(user_id=1, rep_id=1), Drafts(user_id=2, rep_id=2), Drafts(user_id=3, rep_id=3), 
+               Drafts(user_id=1, rep_id=4), Drafts(user_id=2, rep_id=5), Drafts(user_id=3, rep_id=6), 
+               Drafts(user_id=1, rep_id=7), Drafts(user_id=2, rep_id=8), Drafts(user_id=3, rep_id=9), 
+               Drafts(user_id=1, rep_id=10), Drafts(user_id=2, rep_id=4), Drafts(user_id=3, rep_id=10)]
 
-members_list=[]
+members_list=[Member(user_id=1, league_id=1), Member(user_id=1, league_id=2), Member(user_id=2, league_id=2), 
+              Member(user_id=2, league_id=3), Member(user_id=3, league_id=1)]
+
+league_list = [League(name="Sunset Park"), League(name="Flatiron"), League(name="Home Field Advantage")]
+
+recruitment_list = [Team(league_id=1, rep_id=1), Team(league_id=1, rep_id=4), Team(league_id=1, rep_id=8), 
+                    Team(league_id=1, rep_id=10), Team(league_id=2, rep_id=2), Team(league_id=2, rep_id=4), 
+                    Team(league_id=2, rep_id=7),Team(league_id=3, rep_id=3), Team(league_id=3, rep_id=6), 
+                    Team(league_id=3, rep_id=9),Team(league_id=3, rep_id=10), Team(league_id=2, rep_id=5)]
 
 with app.app_context():
     reps = create_reps()
     users = create_users()
     drafts = drafts_list
     memberships = members_list
+    leagues = league_list
+    recruitments = recruitment_list
 
     db.session.add_all(drafts)
     db.session.add_all(reps)
     db.session.add_all(users)
+    db.session.add_all(leagues)
     db.session.add_all(memberships)
+    db.session.add_all(recruitments)
 
     db.session.commit()

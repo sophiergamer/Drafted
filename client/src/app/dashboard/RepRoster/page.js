@@ -3,7 +3,6 @@ import {useState, useEffect} from 'react'
 
 export default function MyRoster(){
 
-const [myDraft, setMyDraft] = useState([])
 
 useEffect(()=>{
     fetch()
