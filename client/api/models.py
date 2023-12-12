@@ -12,7 +12,7 @@ state_codes = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
 class User(db.Model, SerializerMixin):
     __tablename__ = "users_table"
 
-    serialize_rules = ("-drafted.user", "-joined.user")
+    serialize_rules = ("-drafted", "-joined", )
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable= False)
@@ -40,7 +40,7 @@ class User(db.Model, SerializerMixin):
 class Reps(db.Model, SerializerMixin):
     __tablename__ ='reps_table'
 
-    serialize_rules=("-drafts.rep", "-recruited.rep")
+    serialize_rules=("-drafts", "-recruited")
     
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
@@ -69,7 +69,7 @@ class Reps(db.Model, SerializerMixin):
 class League(db.Model, SerializerMixin):
     __tablename__="league_table"
 
-    serialize_rules=("-joined.league", "-recruited.league")
+    serialize_rules=("-joined", "-recruited")
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
@@ -99,7 +99,7 @@ class Drafts(db.Model, SerializerMixin):
 class Member(db.Model, SerializerMixin):
     __tablename__ = "league_members_table"
 
-    serialize_rules = ("-user.joined", "-league.joined")
+    serialize_rules = ("-user", "-league.joined")
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users_table.id"))   

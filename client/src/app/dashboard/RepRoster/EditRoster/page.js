@@ -43,9 +43,9 @@ return(
     </form>
     </div>
     <br/>
-    <div>
+    <div className="flex flex-row p-4">
         <h5>Results:</h5>
-        <div className="border-sky-950">
+        <div>
             {searchResults.map(result=>
                 <SearchedCandidateDisplay key={result.id}
                             id={result.id}

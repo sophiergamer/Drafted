@@ -1,17 +1,12 @@
-export default function LeagueDisplay({name, members}){
+"use client"
+export default function LeagueDisplay({name}){
 
 return(
 <div>
-    <div>
-        <div>
-            <h2>{name}</h2>
-            <p>Members({members.length}):</p>
-            <ul>
-                {members.map(member=>
-                    <li>{member.name}</li>)}
-            </ul>
-        </div>
-    </div>
+        <ul className="text-sky-950">
+            <li>{name}</li>
+        </ul>
+
 </div>
 )
 

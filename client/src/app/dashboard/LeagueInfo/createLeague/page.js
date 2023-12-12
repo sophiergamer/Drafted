@@ -25,7 +25,8 @@ return(
         <h2>Create a League</h2>
         <label>League Name:</label>
         <input onChange={handleForm} value={leagueForm.name} name="name"/>
-        <button type='submit'> create </button>
+        <br/>
+        <button className="bg-red-500 hover:bg-red-700 rounded-lg p-2 m-1" type='submit'> create </button>
     </form>
 </div>
 )

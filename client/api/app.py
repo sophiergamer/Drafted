@@ -68,17 +68,17 @@ def get_rep_by_id(id):
 @app.get("/api/representatives/available")
 def get_free_reps():
     free_reps = Reps.query.filter(Reps.drafted == False).all()
-    free_reps_list = [rep.to_dict(rules=('-drafted','-recruited'))) for rep in free_reps]
+    free_reps_list = [rep.to_dict(rules=('-drafted','-recruited')) for rep in free_reps]
 
     return make_response(jsonify(free_reps_list), 200)
 
 # post route to search through the json file with the search criteria and return only matching candidates
-@app.post("/api/candidateSearch")
+@app.get("/api/candidateSearch")
 def match_candidate_search():
     searched_item = request.get_json()
     state_code, name = searched_item["state_code"], searched_item["name"]
     filtered_list = Reps.query.filter(state_code==Reps.state_code, Reps.name.like(name))
-    list_of_candidates = [candidate.to_dict() for candidate in filtered_list]
+    list_of_candidates = [candidate.to_dict(rules=("-drafted", '-recruited')) for candidate in filtered_list]
 
     return make_response(jsonify(list_of_candidates), 200)
 
@@ -86,7 +86,7 @@ def match_candidate_search():
 @app.get("/api/users")
 def get_all_users():
     users = User.query.all()
-    user_list = [user.to_dict(rules=("-drafted", "-joined")) for user in users]
+    user_list = [user.to_dict() for user in users]
 
     return make_response(jsonify(user_list), 200)
 
@@ -95,7 +95,7 @@ def get_all_users():
 def get_user_by_id(id:int):
     this_user = check_user_id(id)
 
-    return make_response(jsonify(this_user.to_dict(rules=("-drafted", "-joined"))), 200)
+    return make_response(jsonify(this_user.to_dict()), 200)
 
 # post route to add user
 @app.post("/api/users")
@@ -251,7 +251,7 @@ def league_recruits_candidate(league_id:int):
 def get_my_account(current_user):
     logged_in_user = User.query.get(current_user["id"])
 
-    return make_response(jsonify(logged_in_user.to_dict(rules=("-joined", "-drafted"))),200)
+    return make_response(jsonify(logged_in_user.to_dict()),200)
 
 # post for a user to log in
 @app.post("/api/login")
@@ -341,19 +341,19 @@ def user_create_league(current_user):
     logged_in_user = User.query.get(current_user["id"])
     new_league_data = request.get_json()
 
-    new_league = League(name = new_league_data.name)
+    new_league = League(name = new_league_data["name"])
     
     db.session.add(new_league)
     db.session.commit()
 
-    new_membership = Member(user_id= logged_in_user.id,
+    new_membership = Member(user_id= logged_in_user,
                             league_id = new_league.id,
                             is_creator = True)
     
     db.session.add(new_membership)
     db.session.commit()
 
-    return make_response(jsonify(new_league.to_dict("-joined", "-recruited")), 201)
+    return make_response(jsonify(new_league.to_dict()), 201)
 
 # # post route to join a league
 @app.post("/api/myaccount/joinleague")
@@ -362,7 +362,7 @@ def join_league(current_user):
     logged_in_user = User.query.get(current_user["id"])
     league_data = request.get_json()
     new_membership = Member(user_id = logged_in_user.id,
-                            league_id = league_data.id,
+                            league_id = league_data,
                             is_creator = False)
     db.session.add(new_membership)
     db.session.commit()
@@ -374,9 +374,19 @@ def join_league(current_user):
 @authorization_required
 def get_users_leagues(current_user):
     logged_in_user = User.query.get(current_user["id"])
-    leagues = [league.to_dict(rules=("-joined", "-recruited")) for league in logged_in_user.joined]
+    leagues = [league.to_dict() for league in logged_in_user.joined]
 
     return make_response(jsonify(leagues), 200)
+
+#get route to show all leagues available to user
+@app.get("/api/myaccount/leaguestojoin")
+@authorization_required
+def get_available_leagues(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    available = League.query.filter(logged_in_user not in League.joined).all()
+    available_list = [league.to_dict(rules=("-recruited", "-joined")) for league in available]
+
+    return make_response(jsonify(available_list), 200)
 
 # get route to show a user's rosters per league
 @app.get("/api/myaccount/league/roster")
@@ -400,27 +410,27 @@ def get_rosters_by_league(current_user):
     
 
 # delete route to remove a candidate from a user's roster
-@app.delete('/api/myaccount/league/roster')
-@authorization_required
-def delete_drafted_candidate(current_user):
-    logged_in_user = User.query.get(current_user["id"])
+# @app.delete('/api/myaccount/league/roster')
+# @authorization_required
+# def delete_drafted_candidate(current_user):
+#     logged_in_user = User.query.get(current_user["id"])
 
-    rep_to_delete_data = request.get_json()
-    rep_id = rep_to_delete_data["rep_id"]
+#     rep_to_delete_data = request.get_json()
+#     rep_id = rep_to_delete_data["rep_id"]
     
-    association_to_delete = Drafts.query.filter(logged_in_user.id == Drafts.user_id and rep_id == Drafts.rep_id)
-    if not association_to_delete:
-        return make_response({"error":"this link does not exist"}, 404)
+#     association_to_delete = Drafts.query.filter(logged_in_user.id == Drafts.user_id and rep_id == Drafts.rep_id)
+#     if not association_to_delete:
+#         return make_response({"error":"this link does not exist"}, 404)
     
-    recruitment_to_delete=Team.query.filter(rep_id==Team.rep_id , )
+#     recruitment_to_delete=Team.query.filter(rep_id==Team.rep_id , )
 
-    db.session.delete(association_to_delete)
-    db.session.commit()
+#     db.session.delete(association_to_delete)
+#     db.session.commit()
 
-    db.session.delete(recruitment_to_delete)
-    db.session.commit()
+#     db.session.delete(recruitment_to_delete)
+#     db.session.commit()
 
-    return make_response(jsonify(association_to_delete.to_dict(), 200))
+#     return make_response(jsonify(association_to_delete.to_dict(), 200))
 
 
 

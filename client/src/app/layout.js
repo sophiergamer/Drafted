@@ -10,7 +10,8 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className="bg-sky-100">{children}</body>
+      <body className="bg-sky-100" suppressHydrationWarning={true}>
+      {children}</body>
     </html>
   )
 }

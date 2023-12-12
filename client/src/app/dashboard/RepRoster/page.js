@@ -18,7 +18,7 @@ return(
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Your Drafted Candidates</h2>
     <br/>
     <div >
-    {allMyCandidates.map(candidate => (<MyCandidates
+    {allMyCandidates.map(candidate => <MyCandidates
                                 key={candidate.id}
                                 id={candidate.id}
                                 name={candidate.name}
@@ -27,7 +27,7 @@ return(
                                 district_number={candidate.district_number}
                                 seat_status={candidate.seat_status}
                                 party={candidate.party}
-                                photo={candidate.photo_url}/>))}
+                                photo={candidate.photo_url}/>)}
     </div>
     </div>
     <br/>

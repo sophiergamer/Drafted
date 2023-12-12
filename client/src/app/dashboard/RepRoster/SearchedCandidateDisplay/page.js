@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 
 export default function SearchedCandidateDisplay({name, id, office_held, state, district_number, seat_status, party, photo}){
