@@ -19,11 +19,8 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, nullable = False, unique = True)
     password_hash = db.Column(db.String, nullable = False, unique = True)
     email = db.Column(db.String, nullable=False, unique=True)
-    building_number = db.Column(db.Integer, nullable = False)
-    street_name = db.Column(db.String, nullable = False)
     city_name = db.Column(db.String, nullable = False)
     state_code = db.Column(db.String, nullable = False)
-    zip_code = db.Column(db.String, nullable = False)
 
     drafted = db.relationship("Drafts", back_populates = "user")
     reps = association_proxy("drafted", "rep")
@@ -39,11 +36,6 @@ class User(db.Model, SerializerMixin):
     #         raise ValueError("please enter a valid state code")
     #     return state_code
     
-    # @validates("zip_code")
-    # def validate_zip_code(self, key, zip_code):
-    #     if not len(zip_code) == 5:
-    #         raise ValueError("please enter a 5-digit zip code")
-    #     return zip_code
 
 class Reps(db.Model, SerializerMixin):
     __tablename__ ='reps_table'

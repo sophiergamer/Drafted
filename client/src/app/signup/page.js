@@ -4,15 +4,15 @@ import {useState} from 'react'
 
 export default function SignUp(){
 const [signUp, setSignUp] = useState({name:"", username:"", password:"", email:"", 
-                                building_number:"", street_name:"",city_name:"", state_code:"", zip_code:""})
+                                city_name:"", state_code:""})
 
 function handleSignUp(event){
     event.preventDefault();
     setSignUp({...signUp, [event.target.name]: event.target.value})
 }
 
-const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email, building_number:signUp.building_number, street_name:signUp.street_name,
-    city_name:signUp.city_name, state_code:signUp.state_code, zip_code:signUp.zip_code}
+const newUserData= {name:signUp.name, username:signUp.username, password:signUp.password, email:signUp.email,
+    city_name:signUp.city_name, state_code:signUp.state_code}
 
 const router = useRouter()
 
@@ -31,11 +31,8 @@ function signUpUser(event){
             username:"", 
             password:"", 
             email:"", 
-            building_number:"", 
-            street_name:"",
             city_name:"", 
-            state_code:"", 
-            zip_code:""
+            state_code:""
         })
     router.push("/login")
     })}
@@ -52,37 +49,27 @@ return(
     <form className="font-rethink pl-2.5 w-full max-w bg-whiteish border border-slate-400 rounded-lg shadow " onSubmit={signUpUser}>
       <br/>
     <h2 className='text-3xl p-2 m-2 '>Sign Up for<a className='font-trocchi text-4xl tracking-wider text-sky-900'> Drafted</a></h2>
-        <label className="form-label inline text-base m-2 text-slate">Create a Username</label>
+        <label className="form-label inline text-base m-2 text-slate">create a username</label>
         <input type='text' name="username" value={newUserData.username} onChange={handleSignUp} className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate">Your First Name</label>
+        <label className="form-label inline text-base m-2 text-slate">your first name</label>
         <input type='text' name="name" value={newUserData.name} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate">Your Email </label>
+        <label className="form-label inline text-base m-2 text-slate">your email </label>
         <input type='text' name="email" value={newUserData.email} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4  p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate">Create a Password</label>
+        <label className="form-label inline text-base m-2 text-slate">create a password</label>
         <input type='text' name="password" value={newUserData.password} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4  p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate" >Your Address</label>
-        <br/>
-        <label className="form-label inline text-base m-2 text-slate">Building Number</label>
-        <input type='text' name="building_number" value={newUserData.building_number} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
-        <br/>
-        <label className="form-label inline text-base m-2 text-slate">Street Name</label>
-        <input type='text' name="street_name" value={newUserData.street_name} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
-        <br/>
-        <label className="form-label inline text-base m-2 text-slate">City</label>
+        <label className="form-label inline text-base m-2 text-slate">your city</label>
         <input type='text' name="city_name" value={newUserData.city_name} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate">State</label>
-        <select name="state_code" value={newUserData.state_code} onChange={handleSignUp}>
+        <label className="form-label inline text-base m-2 text-slate">your state</label>
+        <select className="rounded-lg p-2 m-2" name="state_code" value={newUserData.state_code} onChange={handleSignUp}>
             {state_codes.map(code=> 
                 <option key={code}>{code}</option>
             )}
         </select>
-        <label>Zip Code</label>
-        <input type='text' name="zip_code" value={newUserData.zip_code} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
         <button className="p-2 w-m m-4 text-white bg-sky-500 hover:bg-sky-600 font-medium rounded-lg text-sm text-center" type="submit">Sign Up</button>
     </form>

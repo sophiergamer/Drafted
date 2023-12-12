@@ -41,11 +41,8 @@ def create_users():
                        email=user["email"],
                        username= user["login"]["username"],
                        password_hash=user["login"]["password"],
-                       building_number=user["location"]["street"]["number"],
-                       street_name=user["location"]["street"]["name"],
                        city_name=user["location"]["city"],
-                       state_code=user["location"]["state"],
-                       zip_code=user["location"]["postcode"])
+                       state_code=user["location"]["state"])
         random_user_list.append(random_user)
     return random_user_list
 

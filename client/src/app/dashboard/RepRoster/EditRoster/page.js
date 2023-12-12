@@ -1,5 +1,5 @@
 'use client'
-import RepDisplay from "@/app/dashboard/RepRoster/RepDisplay/page";
+import SearchedCandidateDisplay from "@/app/dashboard/RepRoster/SearchedCandidateDisplay/page";
 import {useState} from 'react'
 
 
@@ -13,7 +13,7 @@ function handleForm(event){
     setSearchInfo({...searchInfo, [event.target.name]: event.target.value})
 }
 
-newSearch={state_code:searchInfo.state_code, name:searchInfo.name}
+const newSearch={state_code:searchInfo.state_code, name:searchInfo.name}
 
 function searchCandidates(event){
     event.preventDefault();
@@ -28,18 +28,26 @@ function searchCandidates(event){
 
 return(
 <div>
-    <h5>Search for Candidates</h5>
-    <form onSubmit={searchCandidates}>
+    <div className="border-sky-800 border-2 p-4">
+    <h5 className="text-sky-950 font-rethink text-lg">Search for Candidates</h5>
+    <form  onSubmit={searchCandidates}>
         <label>State's Abbreviation:</label>
-        <input type="text" name="state_code" value={searchInfo.state_code} placeholder="CA, NY, FL eg." onChange={handleForm}/>
+        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2" type="text" name="state_code" value={searchInfo.state_code} placeholder="CA, NY, FL eg." onChange={handleForm}/>
+        <br/>
+        <p className="text-sky-800">and/or</p>
+        <br/>
         <label>Candidate Name:</label>
-        <input type="text" name="name" value={searchInfo.name} onChange={handleForm}/>
+        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2" type="text" name="name" value={searchInfo.name} onChange={handleForm}/>
+        <br/>
+        <button className="text-sm font-rethink text-white bg-sky-500 hover:bg-sky-600  p-2 mt-2 rounded-lg text-center"type="submit">search</button>
     </form>
+    </div>
+    <br/>
     <div>
         <h5>Results:</h5>
-        <div>
+        <div className="border-sky-950">
             {searchResults.map(result=>
-                <RepDisplay key={result.id}
+                <SearchedCandidateDisplay key={result.id}
                             id={result.id}
                             name={result.name}
                             office_held={result.office_held}
