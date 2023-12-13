@@ -52,10 +52,18 @@ def check_eligible(league_id:int, rep_id:int):
 @app.get("/api/representatives")
 def get_all_reps():
     reps = Reps.query.all()
-    rep_list = [rep.to_dict(rules=("-drafted", "-recruited")) for rep in reps]
+    rep_list = [rep.to_dict(rules=("-recruited", "-drafted")) for rep in reps]
 
     return make_response(jsonify(rep_list), 200)
 
+# get route to get only 20 reps for testing purposes
+@app.get("/api/shortrepslist")
+def get_20_reps():
+    reps = Reps.query.filter(Reps.id <=23).all()
+    short_rep_list = [rep.to_dict(rules=("-recruited", "-drafted")) for rep in reps]
+
+    return make_response(jsonify(short_rep_list), 200
+                         )
 # get route to get a rep by id
 @app.get("/api/representatives/<int:id>")
 def get_rep_by_id(id):
@@ -320,7 +328,7 @@ def user_draft_candidate(current_user):
     rep_id = draft_proposal["rep_id"]
     check_eligible(league_id, rep_id)
 
-    drafted_rep=Drafts(user_id = logged_in_user["id"],
+    drafted_rep=Drafts(user_id = logged_in_user.id,
                        rep_id = rep_id)
     recruitment = Team(rep_id=rep_id,
                        league_id=league_id)
@@ -346,7 +354,7 @@ def user_create_league(current_user):
     db.session.add(new_league)
     db.session.commit()
 
-    new_membership = Member(user_id= logged_in_user,
+    new_membership = Member(user_id= logged_in_user.id,
                             league_id = new_league.id,
                             is_creator = True)
     

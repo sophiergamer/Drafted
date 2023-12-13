@@ -1,7 +1,8 @@
 export default function MyCandidatesLayout({name, id, office_held, state, district_number, seat_status, party, photo}){
 
     return (<div className="max-w-xs text-center shadow-md rounded-lg overflow-hidden bg-white justify-center border-sky-800 border-4 ml-8">
-    <div>
+    {children}
+    {/* {/* <div>
     <Image className="w-full"
         src={photo}
         width={200}
@@ -17,6 +18,6 @@ export default function MyCandidatesLayout({name, id, office_held, state, distri
         <p>district: {district_number}</p>
         <p>seat status: {seat_status}</p>
     </div>
-    <button className="bg-red-500 hover:bg-red-700 rounded-lg text-white p-2 m-2">Draft this Candidate</button>
-</div>)
+    <button className="bg-red-500 hover:bg-red-700 rounded-lg text-white p-2 m-2">Draft this Candidate</button> */}
+</div>) 
 }

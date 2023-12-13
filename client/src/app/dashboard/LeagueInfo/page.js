@@ -16,10 +16,12 @@ useEffect(()=>{
 },[])
 
 
+
 return(
 <div >
   <div className='p-4 bg-sky-300 rounded-md m-2'>
     <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Your Leagues</h2>
+    <br/>
     {myLeagues.map(item=>
     <LeagueDisplay key={item.league.id}
                 name={item.league.name}
@@ -28,7 +30,7 @@ return(
 </div>
 <br/>
 <div className='p-4 bg-sky-300 rounded-md m-2'>
-<h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Create a League</h2>
+<h2 className='font-trocchi text-sky-900 text-xl tracking-wide p-2'>Create a League</h2>
 <CreateLeague/>
 </div>
 <br/>

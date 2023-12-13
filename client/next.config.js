@@ -1,6 +1,17 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+    images: {
+        formats: ['image/avif', 'image/webp'],
+        remotePatterns: [
+          {
+            protocol: 'http',
+            hostname: 'placekitten.com',
+            port: '',
+            pathname: '/200/300',
+          }
+        ]
+        },
     rewrites: async () => {
     return [
         {
