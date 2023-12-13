@@ -30,20 +30,10 @@ useEffect(()=>{
         setMyLeagues(data)})
 },[])
 
-function draftCandidate(event){
-    event.preventDefault();
-    fetch("/api/myaccount/draftedcandidates", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify()
-
-    })
-    }
 function handleDraft(event){
     event.preventDefault();
-    setNewDraftData({...newDraft, [event.target.name]: event.target.value})
+    setNewDraftData({[event.target.name]: event.target.value})
 }
-const newDraft = {league_id:newDraftData.league_id, rep_id:newDraftData.rep_id }
 
 return(
 <div>
@@ -70,7 +60,8 @@ return(
     <div className='p-2'>
     <select className="rounded-lg p-1" name="league_id" value={newDraftData.league_id} onChange={handleDraft}>
         {myLeagues.map(item=>
-        <option>{item.league.name}</option>)}
+        <option value={item.league.id} key={item.league.id}>{item.league.name}</option>
+        )}
         </select>
         </div>
     <div className='grid grid-cols-3'>
@@ -84,9 +75,10 @@ return(
                                         seat_status={candidate.seat_status}
                                         party={candidate.party}
                                         photo={candidate.photo_url}
-                                        draftCandidate={draftCandidate}
                                         handleDraft={handleDraft}
-                                        newDraftData={newDraftData}/>)}
+                                        newDraftData={newDraftData}
+                                        setMyCandidates={setMyCandidates}
+                                        myCandidates={myCandidates}/>)}
           
     </div>
 

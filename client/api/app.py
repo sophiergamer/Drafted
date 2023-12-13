@@ -47,6 +47,13 @@ def check_eligible(league_id:int, rep_id:int):
     if not existing_recruit:
         return True
     
+# function to get reps from list of rep ids
+def find_rep(candidate_ids):
+    my_candidates=[]
+    for id in candidate_ids:
+        my_candidates.append(Reps.query.filter(id== Reps.id).first())
+    return my_candidates
+    
 
 # get route to see list of reps
 @app.get("/api/representatives")
@@ -315,8 +322,10 @@ def user_logout():
 @authorization_required
 def get_user_candidates(current_user):
     logged_in_user = User.query.get(current_user["id"])
-    candidates = [candidate.to_dict(rules=("-drafted", "-recruited")) for candidate in logged_in_user.drafted]
-    return make_response(jsonify(candidates), 200)
+    candidate_ids = [candidate.rep_id for candidate in logged_in_user.drafted]
+    my_candidate_list = find_rep(candidate_ids)
+    candidate_list = [item.to_dict() for item in my_candidate_list]
+    return make_response(jsonify(candidate_list), 200)
 
 # post route to associate a user and a rep
 @app.post("/api/myaccount/draftedcandidates")
@@ -339,7 +348,9 @@ def user_draft_candidate(current_user):
     db.session.add(recruitment)
     db.session.commit()
 
-    return make_response(jsonify(drafted_rep.to_dict(), recruitment.to_dict()), 201)
+    new_rep = Reps.query.filter(rep_id == Reps.id).first()
+
+    return make_response(jsonify(new_rep.to_dict()), 201)
 
 
 # post route to create a league AS A USER
@@ -361,7 +372,7 @@ def user_create_league(current_user):
     db.session.add(new_membership)
     db.session.commit()
 
-    return make_response(jsonify(new_league.to_dict()), 201)
+    return make_response(jsonify(new_membership.to_dict()), 201)
 
 # # post route to join a league
 @app.post("/api/myaccount/joinleague")

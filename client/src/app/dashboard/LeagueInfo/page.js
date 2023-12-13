@@ -15,6 +15,25 @@ useEffect(()=>{
       setMyLeagues(data)})
 },[])
 
+const [leagueForm, setLeagueForm] = useState({name:""})
+
+function handleForm(event){
+    event.preventDefault();
+    setLeagueForm({...leagueForm, [event.target.name]:event.target.value})}
+
+const newLeague = {name: leagueForm.name}
+
+function createLeague(event){
+    event.preventDefault();
+    fetch("/api/myaccount/leagues",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(newLeague)
+    }).then(response=>response.json())
+.then(data=>{
+    setMyLeagues([...myLeagues, data])
+    setLeagueForm({name:""})})}
+
 
 
 return(
@@ -31,7 +50,9 @@ return(
 <br/>
 <div className='p-4 bg-sky-300 rounded-md m-2'>
 <h2 className='font-trocchi text-sky-900 text-xl tracking-wide p-2'>Create a League</h2>
-<CreateLeague/>
+<CreateLeague handleForm={handleForm}
+              leagueForm={leagueForm}
+              createLeague={createLeague}/>
 </div>
 <br/>
 {/* <div className='p-4 bg-sky-300 rounded-md m-2'>

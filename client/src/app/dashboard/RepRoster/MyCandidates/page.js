@@ -1,8 +1,9 @@
 "use client"
+import Image from "next/image"
 export default function MyCandidates({name, id, office_held, state, district_number, seat_status, party, photo}){
 
 return(
-    <div className="max-w-xs text-center shadow-md rounded-lg overflow-hidden bg-white justify-center border-sky-800 border-4 ml-8">
+    <div className="max-w-xs text-center shadow-md rounded-lg overflow-hidden bg-white justify-center border-sky-800 border-4 m-2">
         <div>
         <Image className="w-full"
             src={photo}

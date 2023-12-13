@@ -1,9 +1,19 @@
 "use client"
 import Image from "next/image"
-import AddCandidate from "../AddCandidate/page"
 
 
-export default function AllCandidates({name, id, office_held, state, district_number, seat_status, party, photo, draftCandidate, newDraftData, handleDraft}){
+
+export default function AllCandidates({name, rep_id, office_held, state, district_number, seat_status, party, photo, newDraftData, myCandidates, setMyCandidates}){
+    function draftCandidate(event){
+        event.preventDefault();
+        fetch("/api/myaccount/draftedcandidates", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({...newDraftData, "rep_id":rep_id})
+        }).then(response=>response.json())
+        .then(data=>setMyCandidates([...myCandidates, data]))
+        }
+    
 
 return(
 <div>
@@ -24,10 +34,15 @@ return(
             <p>district: {district_number}</p>
             <p>seat status: {seat_status}</p>
         </div>
-        <AddCandidate   //rep_id={id}
+        <button onClick={draftCandidate}  name="rep_id" 
+        className="bg-red-500 hover:bg-red-700 rounded-lg text-white p-2 m-2">Draft this Candidate</button>
+
+
+
+        {/* <AddCandidate   //rep_id={id}
                         draftCandidate={draftCandidate}
                         handleDraft={handleDraft}
-                        newDraftData={newDraftData}/>
+                        newDraftData={newDraftData}/> */}
     </div>
 </div>
     )
