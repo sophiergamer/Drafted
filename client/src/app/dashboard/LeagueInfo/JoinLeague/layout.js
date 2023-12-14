@@ -1,5 +1,5 @@
-// export default function JoinLeagueLayout({children}){
-//     return(
-//         <div>{children}</div>
-//     )
-// }
+export default function JoinLeagueLayout({children}){
+    return(
+        <div>{children}</div>
+    )
+}

@@ -53,7 +53,17 @@ def find_rep(candidate_ids):
     for id in candidate_ids:
         my_candidates.append(Reps.query.filter(id== Reps.id).first())
     return my_candidates
-    
+
+# function to get the non-included between 2 lists via id
+def find_outliers(list_1, list_2):
+    outliers = []
+    for item in list_1:
+        for thing in list_2:  
+            if item.id != thing.league_id:
+                outliers.append(item)
+        return outliers
+    return [outlier.to_dict() for outlier in outliers]
+
 
 # get route to see list of reps
 @app.get("/api/representatives")
@@ -374,7 +384,18 @@ def user_create_league(current_user):
 
     return make_response(jsonify(new_membership.to_dict()), 201)
 
-# # post route to join a league
+
+#  get route to show a user's leagues
+@app.get("/api/myaccount/leagues")
+@authorization_required
+def get_users_leagues(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    leagues = [league.to_dict() for league in logged_in_user.joined]
+
+    return make_response(jsonify(leagues), 200)
+
+
+# post route to join a league
 @app.post("/api/myaccount/joinleague")
 @authorization_required
 def join_league(current_user):
@@ -388,24 +409,18 @@ def join_league(current_user):
 
     return make_response(jsonify(new_membership.to_dict()),201)
 
-#  get route to show a user's leagues
-@app.get("/api/myaccount/leagues")
-@authorization_required
-def get_users_leagues(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-    leagues = [league.to_dict() for league in logged_in_user.joined]
-
-    return make_response(jsonify(leagues), 200)
-
 #get route to show all leagues available to user
 @app.get("/api/myaccount/leaguestojoin")
 @authorization_required
 def get_available_leagues(current_user):
     logged_in_user = User.query.get(current_user["id"])
-    available = League.query.filter(logged_in_user not in League.joined).all()
-    available_list = [league.to_dict(rules=("-recruited", "-joined")) for league in available]
+    all_leagues = League.query.all() ## list 1
+    print('got league list')
+    my_memberships = Member.query.filter(Member.user_id == logged_in_user.id).all() ## list 2
+    print('got memberships')
+    available_leagues = find_outliers(all_leagues, my_memberships)
 
-    return make_response(jsonify(available_list), 200)
+    return make_response(jsonify(available_leagues), 200)
 
 # get route to show a user's rosters per league
 @app.get("/api/myaccount/league/roster")
@@ -429,27 +444,26 @@ def get_rosters_by_league(current_user):
     
 
 # delete route to remove a candidate from a user's roster
-# @app.delete('/api/myaccount/league/roster')
-# @authorization_required
-# def delete_drafted_candidate(current_user):
-#     logged_in_user = User.query.get(current_user["id"])
+@app.delete('/api/myaccount/league/roster')
+@authorization_required
+def delete_drafted_candidate(current_user):
+    assoc_to_delete= request.get_json()
+    league_id = assoc_to_delete["league_id"]
+    logged_in_user = User.query.get(current_user["id"])
 
-#     rep_to_delete_data = request.get_json()
-#     rep_id = rep_to_delete_data["rep_id"]
+    rep_id = assoc_to_delete["rep_id"]
     
-#     association_to_delete = Drafts.query.filter(logged_in_user.id == Drafts.user_id and rep_id == Drafts.rep_id)
-#     if not association_to_delete:
-#         return make_response({"error":"this link does not exist"}, 404)
+    association_to_delete = Drafts.query.filter(logged_in_user.id == Drafts.user_id and rep_id == Drafts.rep_id)
     
-#     recruitment_to_delete=Team.query.filter(rep_id==Team.rep_id , )
+    recruitment_to_delete=Team.query.filter(rep_id==Team.rep_id , league_id==Team.league_id)
 
-#     db.session.delete(association_to_delete)
-#     db.session.commit()
+    db.session.delete(association_to_delete)
+    db.session.commit()
 
-#     db.session.delete(recruitment_to_delete)
-#     db.session.commit()
+    db.session.delete(recruitment_to_delete)
+    db.session.commit()
 
-#     return make_response(jsonify(association_to_delete.to_dict(), 200))
+    return make_response(jsonify(association_to_delete.to_dict(), 200))
 
 
 

@@ -37,6 +37,7 @@ function createLeague(event){
 
 
 return(
+
 <div >
   <div className='p-4 bg-sky-300 rounded-md m-2'>
     <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Your Leagues</h2>
@@ -46,22 +47,20 @@ return(
                 name={item.league.name}
                 />
 )}
-</div>
+    </div>
 <br/>
-<div className='p-4 bg-sky-300 rounded-md m-2'>
-<h2 className='font-trocchi text-sky-900 text-xl tracking-wide p-2'>Create a League</h2>
+    <div className='p-4 bg-sky-300 rounded-md m-2'>
+        <h2 className='font-trocchi text-sky-900 text-xl tracking-wide p-2'>Create a League</h2>
 <CreateLeague handleForm={handleForm}
               leagueForm={leagueForm}
               createLeague={createLeague}/>
-</div>
+    </div>
 <br/>
-{/* <div className='p-4 bg-sky-300 rounded-md m-2'>
-<h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Join a League</h2> */}
+    <div className='p-4 bg-sky-300 rounded-md m-2'>
+        <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Join a League</h2> 
 {/* <JoinLeague/> */}
-{/* </div> */}
-
+    </div>
 </div>
-
 )
 
 }

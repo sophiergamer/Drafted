@@ -4,6 +4,7 @@ import {useState} from 'react'
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Drafted from "../Drafted.png"
+import draftedCopy from "../draftedCopy.png"
 
 export default function LogIn(){
 const [user, setUser] = useState({username:"", password:""})
@@ -47,7 +48,7 @@ return(
           <p>not yet using Drafted? <Link className="hover:underline"href="signup">sign up now!</Link></p>
         </div>
 <br/>
-<Image className="flex-auto p-7 rounded-full w-3/5 h-3/5" src={Drafted}
+<Image className="flex-auto p-7 rounded-full w-3/5 h-3/5" src={draftedCopy}
                   alt="logo"
                  height="500"
                   width="500"/>
