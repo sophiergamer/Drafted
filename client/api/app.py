@@ -81,8 +81,19 @@ def get_20_reps():
 
     return make_response(jsonify(short_rep_list), 200
                          )
+# post route for reps PAGINATED
+@app.get('/api/representatives/page/<int:pageNumber>')
+def get_reps_by_page(pageNumber:int):
+    # page_data = request.get_json()
+    # page = page_data['page']
+    reps_per_page = 30
+    pagination = Reps.query.order_by(Reps.name).paginate(page=pageNumber, per_page=reps_per_page)
+    pagination_list = [rep.to_dict() for rep in pagination]
+
+    return make_response(jsonify(pagination_list), 201)
+
 # get route to get a rep by id
-@app.get("/api/representatives/<int:id>")
+@app.get("/api/representatives/id/<int:id>")
 def get_rep_by_id(id):
     this_rep = check_rep_id(id)
 

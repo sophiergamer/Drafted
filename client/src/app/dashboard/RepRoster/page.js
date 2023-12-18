@@ -3,12 +3,14 @@ import {useState, useEffect} from 'react'
 import MyCandidates from './MyCandidates/page'
 // import EditRoster from './SearchCandidates/page'
 import AllCandidates from './AllCandidates/page'
+import next from 'next'
 
 export default function MyRoster(){
 const [myCandidates, setMyCandidates] = useState([])
 const [allCandidates, setAllCandidates] = useState([])
 const [myLeagues, setMyLeagues] = useState([])
 const [newDraftData, setNewDraftData] = useState({league_id:"", rep_id:""})
+const [pageNumber, setPageNumber] = useState(1)
 
 useEffect(()=>{
     fetch("/api/myaccount/draftedcandidates")
@@ -16,11 +18,30 @@ useEffect(()=>{
     .then(data => setMyCandidates(data))
     }, [])
 
+// useEffect(()=>{
+//     fetch("/api/shortrepslist")
+//     .then(response=>response.json())
+//     .then(data=>setAllCandidates(data))
+// }, [])
+
+
+
 useEffect(()=>{
-    fetch("/api/shortrepslist")
-    .then(response=>response.json())
-    .then(data=>setAllCandidates(data))
-}, [])
+    fetch(`/api/representatives/page/${pageNumber}`)
+    .then(response => response.json())
+    .then(data => setAllCandidates(data))
+}, [pageNumber])
+
+function nextPage(){
+    if (pageNumber <=1111){
+    setPageNumber(pageNumber + 1)}
+    console.log(pageNumber)
+}
+
+function prevPage(){
+    if (pageNumber >=2){
+    setPageNumber(pageNumber - 1)}
+}
 
 useEffect(()=>{
     fetch("/api/myaccount/leagues")
@@ -34,6 +55,8 @@ function handleDraft(event){
     event.preventDefault();
     setNewDraftData({[event.target.name]: event.target.value})
 }
+
+
 
 return(
 <div>
@@ -54,7 +77,7 @@ return(
     </div>
     </div>
     <br/>
-    <div className='p-4 bg-sky-300 rounded-md m-2'>
+    <div className='p-4 bg-sky-300 rounded-md m-2 w-full'>
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Edit Your Roster</h2>
     <br/>
     <div className='p-2'>
@@ -81,7 +104,10 @@ return(
                                         myCandidates={myCandidates}/>)}
           
     </div>
-
+        <div className='flex space-x-4' >
+            <button onClick={prevPage} className='rounded-lg bg-sky-800 hover:bg-sky-950 text-white font-rethink text-sm p-2 m-2'>previous page</button>
+            <button onClick={nextPage} className='rounded-lg bg-sky-800  hover:bg-sky-950 text-white font-rethink text-sm p-2 m-2'>next page</button>
+        </div>
     </div>
 </div>
 )
