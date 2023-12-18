@@ -11,6 +11,7 @@ const [allCandidates, setAllCandidates] = useState([])
 const [myLeagues, setMyLeagues] = useState([])
 const [newDraftData, setNewDraftData] = useState({league_id:"", rep_id:""})
 const [pageNumber, setPageNumber] = useState(1)
+const [leagueRoster, setLeagueRoster] = useState([])
 
 useEffect(()=>{
     fetch("/api/myaccount/draftedcandidates")
@@ -24,6 +25,11 @@ useEffect(()=>{
 //     .then(data=>setAllCandidates(data))
 // }, [])
 
+useEffect(()=>{
+    fetch("/api/myaccount/league/roster")
+    .then(response=> response.json())
+    .then(data=> setLeagueRoster([...leagueRoster, data]))
+})
 
 
 useEffect(()=>{
@@ -63,6 +69,14 @@ return(
     <div className='p-4 bg-sky-300 rounded-md m-2'>
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Your Drafted Candidates</h2>
     <br/>
+    <div>{myLeagues.map(item=>
+        <div className='border-b-2 p-2'>
+        <h3 key={item.league.id} league_id={item.league.id}>{item.league.name}</h3>
+        <ul>
+            {leagueRoster.map(item=>)}
+        </ul>
+        </div>)}
+        </div>
     <div className='grid grid-cols-3'>
     {myCandidates.map(candidate => <MyCandidates
                                 key={candidate.id}

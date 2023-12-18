@@ -434,24 +434,52 @@ def get_available_leagues(current_user):
     return make_response(jsonify(available_leagues), 200)
 
 # get route to show a user's rosters per league
-@app.get("/api/myaccount/league/roster")
-@authorization_required  
-def get_rosters_by_league(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-    league_info = request.get_json()
-    league_id = league_info["id"]
-    this_league = League.query.filter(league_id== League.id)
-    candidates = [candidate.to_dict(rules=("-drafted", "-recruited")) for candidate in this_league.recruited]
+# @app.get("/api/myaccount/league/roster")
+# @authorization_required  
+# def get_rosters_by_league(current_user):
+#     logged_in_user = User.query.get(current_user["id"])
+#     league_info = request.get_json()
+#     league_id = league_info["id"]
+#     this_league = League.query.filter(league_id== League.id)
+#     candidates = [candidate.to_dict(rules=("-drafted", "-recruited")) for candidate in this_league.recruited]
 
-    def __candidate_multifilter(candidates):
+#     def __candidate_multifilter(candidates):
+#         league_roster_by_user = []
+#         for candidate in candidates:
+#             if candidate.rep_id in logged_in_user.drafted:
+#                 league_roster_by_user.append(candidate)
+#         return league_roster_by_user
+    
+#     roster_list = __candidate_multifilter(candidates)
+#     return make_response(jsonify(roster_list), 200)
+
+@app.get("/api/<int:user_id>/league/roster")
+def get_rosters_by_league(user_id:int):
+    logged_in_user = User.query.filter(user_id == User.id).first()
+   
+    draft_list = [draft for draft in logged_in_user.drafted]
+    print(draft_list)
+    rep_id_list = [draft.rep_id for draft in draft_list]
+    print(rep_id_list)
+
+    league_info = request.get_json()
+    league_id = league_info["league_id"]
+
+    this_league = League.query.filter(league_id== League.id).first()
+
+    team = [member for member in this_league.recruited]
+    print(team)
+
+    def __candidate_multifilter(team, rep_id_list):
         league_roster_by_user = []
-        for candidate in candidates:
-            if candidate.rep_id in logged_in_user.drafted:
-                league_roster_by_user.append(candidate)
+        for member in team:
+            if member.rep_id in rep_id_list:
+                league_roster_by_user.append(member.rep_id)
         return league_roster_by_user
     
-    roster_list = __candidate_multifilter(candidates)
+    roster_list = __candidate_multifilter(team, rep_id_list)
     return make_response(jsonify(roster_list), 200)
+    
     
 
 # delete route to remove a candidate from a user's roster
