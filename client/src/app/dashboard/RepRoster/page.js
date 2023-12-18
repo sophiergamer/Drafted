@@ -12,6 +12,7 @@ const [myLeagues, setMyLeagues] = useState([])
 const [newDraftData, setNewDraftData] = useState({league_id:"", rep_id:""})
 const [pageNumber, setPageNumber] = useState(1)
 const [leagueRoster, setLeagueRoster] = useState([])
+const [leagueId, setLeagueId] = useState("")
 
 useEffect(()=>{
     fetch("/api/myaccount/draftedcandidates")
@@ -26,10 +27,10 @@ useEffect(()=>{
 // }, [])
 
 useEffect(()=>{
-    fetch("/api/myaccount/league/roster")
+    fetch(`/api/myaccount/${leagueId}/roster`)
     .then(response=> response.json())
     .then(data=> setLeagueRoster([...leagueRoster, data]))
-})
+},[])
 
 
 useEffect(()=>{
@@ -62,6 +63,9 @@ function handleDraft(event){
     setNewDraftData({[event.target.name]: event.target.value})
 }
 
+function changeLeague(event){
+    setLeagueId(event.target.name = event.target.value)
+}
 
 
 return(
@@ -69,13 +73,28 @@ return(
     <div className='p-4 bg-sky-300 rounded-md m-2'>
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Your Drafted Candidates</h2>
     <br/>
-    <div>{myLeagues.map(item=>
+    <div>
         <div className='border-b-2 p-2'>
-        <h3 key={item.league.id} league_id={item.league.id}>{item.league.name}</h3>
+            <select className="rounded-lg p-1" name="leagueId" value={leagueId} onChange={changeLeague}>
+            {myLeagues.map(item=>
+                <option value={item.league.id} key={item.league.id}>{item.league.name}</option>
+            )}
+            </select>
+      
+        {/* <h3 key={item.league.id} league_id={item.league.id}>{item.league.name}</h3> */}
         <ul>
-            {leagueRoster.map(item=>)}
+            {leagueRoster.map(candidate=><MyCandidates
+                                key={candidate.id}
+                                id={candidate.id}
+                                name={candidate.name}
+                                office_held={candidate.office_held}
+                                state={candidate.state} 
+                                district_number={candidate.district_number}
+                                seat_status={candidate.seat_status}
+                                party={candidate.party}
+                                photo={candidate.photo_url}/>)}
         </ul>
-        </div>)}
+        </div>
         </div>
     <div className='grid grid-cols-3'>
     {myCandidates.map(candidate => <MyCandidates
@@ -91,7 +110,7 @@ return(
     </div>
     </div>
     <br/>
-    <div className='p-4 bg-sky-300 rounded-md m-2 w-full'>
+ <div className='p-4 bg-sky-300 rounded-md m-2 w-full'>
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Edit Your Roster</h2>
     <br/>
     <div className='p-2'>
