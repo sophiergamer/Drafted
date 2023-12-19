@@ -7,6 +7,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
+
 CORS(app)
 
 load_dotenv()
@@ -84,12 +85,12 @@ def get_20_reps():
 
 
 # post route for reps PAGINATED
-@app.get('/api/representatives/page/<int:pageNumber>')
-def get_reps_by_page(pageNumber:int):
+@app.get('/api/representatives/page/<int:page_number>')
+def get_reps_by_page(page_number:int):
     # page_data = request.get_json()
     # page = page_data['page']
     reps_per_page = 30
-    pagination = Reps.query.order_by(Reps.name).paginate(page=pageNumber, per_page=reps_per_page)
+    pagination = Reps.query.order_by(Reps.name).paginate(page=page_number, per_page=reps_per_page)
     pagination_list = [rep.to_dict() for rep in pagination]
 
     return make_response(jsonify(pagination_list), 201)
@@ -111,13 +112,26 @@ def get_free_reps():
     return make_response(jsonify(free_reps_list), 200)
 
 # post route to search through the json file with the search criteria and return only matching candidates
-@app.get("/api/candidateSearch")
+@app.post("/api/candidateSearch")
 def match_candidate_search():
     searched_item = request.get_json()
-    state_code, name = searched_item["state_code"], searched_item["name"]
-    filtered_list = Reps.query.filter(state_code==Reps.state_code, Reps.name.like(name))
+    state, name = searched_item["state"].upper(), searched_item["name"]
+    print(state, name)
+    filtered_list = Reps.query.filter(state==Reps.state, Reps.name.like(name))
     list_of_candidates = [candidate.to_dict(rules=("-drafted", '-recruited')) for candidate in filtered_list]
 
+    return make_response(jsonify(list_of_candidates), 200)
+
+@app.post("/api/candidateSearch/<int:page_number>")
+def match_candidate_search_paginated(page_number:int):
+    searched_item = request.get_json()
+    state, office_held, party = searched_item["state"], searched_item["office_held"], searched_item["party"]
+    print(office_held, party, state)
+    reps_per_page = 30
+    filtered_by_state = Reps.query.filter(Reps.state == state, Reps.office_held==office_held, Reps.party==party).order_by(Reps.name).paginate(page=page_number, per_page=reps_per_page)
+    print(filtered_by_state)
+    list_of_candidates=[candidate.to_dict() for candidate in filtered_by_state]
+    print(list_of_candidates)
     return make_response(jsonify(list_of_candidates), 200)
 
 # get route to get list of users

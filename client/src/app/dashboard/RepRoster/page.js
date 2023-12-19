@@ -12,23 +12,24 @@ const [newDraftData, setNewDraftData] = useState({league_id:"", rep_id:""})
 const [pageNumber, setPageNumber] = useState(1)
 const [leagueRoster, setLeagueRoster] = useState([])
 const [leagueId, setLeagueId] = useState("1")
-const [searchInfo, setSearchInfo] = useState({state_code:"", name:""})
+const [searchInfo, setSearchInfo] = useState({state:"", office_held:"", party:""})
+
 
 function handleSearch(event){
     event.preventDefault();
     setSearchInfo({...searchInfo, [event.target.name]: event.target.value})
 }
 
-const newSearch={state_code:searchInfo.state_code, name:searchInfo.name}
+const newSearch={state:searchInfo.state, office_held:searchInfo.office_held, party:searchInfo.party}
 
 function searchCandidates(event){
     event.preventDefault();
-    fetch("/candidateSearch",{
+    fetch(`/api/candidateSearch/${pageNumber}`,{
         method:"POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(newSearch)
     }).then(response=>response.json())
-    .then(data=>setSearchResults(data))
+    .then(data=>setAllCandidates(data))
 }
 
 
@@ -74,7 +75,7 @@ useEffect(()=>{
     fetch(`/api/representatives/page/${pageNumber}`)
     .then(response => response.json())
     .then(data => setAllCandidates(data))
-}, [pageNumber])
+}, [])
 
 function nextPage(){
     if (pageNumber <=1111){
@@ -150,17 +151,27 @@ return(
  <div className='p-4 bg-sky-300 rounded-md m-2 w-full'>
     <h2 className='font-trocchi tracking-wide text-sky-900 text-xl' >Edit Your Roster</h2>
     <br/>
- <div className= "p-4">
+ <div className= "p-4 bg-sky-200 border-sky-900 border-2 rounded-lg">
     <h5 className="text-sky-950 font-rethink text-lg">Search for Candidates</h5>
     <form  onSubmit={searchCandidates}>
         <label>State's Abbreviation:</label>
-        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 m-2" type="text" name="state_code" value={searchInfo.state_code} placeholder="CA, NY, FL eg." onChange={handleSearch}/>
+        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 m-2" type="text" name="state" value={searchInfo.state} placeholder="CA, NY, FL eg." onChange={handleSearch}/>
         <br/>
-    
-        <label>Candidate Name:</label>
-        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 m-2" type="text" name="name" value={searchInfo.name} onChange={handleSearch}/>
-        <br/>
-        <button className="text-sm font-rethink text-white bg-sky-500 hover:bg-sky-600  p-2 mt-2 rounded-lg text-center"type="submit">search</button>
+        <label className='font-bolder p-2'>Office: </label>
+        <select className="rounded-lg p-2" name="office_held" value={searchInfo.office_held} onChange={handleSearch}>
+            <option>Choose One</option>
+            <option value="P">President</option>
+            <option value="S">Senate</option>
+            <option value="H">House of Representatives</option>
+        </select>
+        <label className='font-bolder p-2'>Party Affiliation: </label>
+        <select className="rounded-lg p-2" name="party" value={searchInfo.party} onChange={handleSearch}> 
+            <option>Choose One</option>
+             <option value="DEM">Democratic</option>
+            <option value="REP">Republican</option>
+            <option value="">Any</option>
+        </select>
+        <button className="text-sm font-rethink text-white bg-sky-500 hover:bg-sky-600  pt-1 pb-1 pl-2 pr-2 m-4 rounded-lg text-center"type="submit">search</button>
     </form>
  </div>    
  <br/>                           
@@ -196,3 +207,30 @@ return(
 </div>
 )
 }
+
+
+
+/* <div className="checkbox-wrapper m-2">
+<p className='font-rethink bg-white w-fit p-1'>position:</p>
+  <label className='p-2' >
+    <input type="checkbox" name="office_held" value="P"  onChange={handleSearch}/>
+    President
+  </label>
+  <label className='p-2'>
+    <input type="checkbox" name="office_held" value="S" onChange={handleSearch}/>
+    Senate
+  </label>
+  <label className='p-2'>
+    <input type="checkbox" name="office_held" value="H" onChange={handleSearch}/>
+    House of Representatives
+  </label>
+  <p className='font-rethink underline underline-offset-2'>party affiliation:</p>
+  <label className='p-2'>
+    <input type="checkbox" name="office_held" value="DEM" onChange={handleSearch} />
+    Democratic
+  </label>
+  <label className='p-2'>
+    <input type="checkbox" name="office_held" value="REP" onChange={handleSearch} />
+    Republican
+  </label>
+</div> */
