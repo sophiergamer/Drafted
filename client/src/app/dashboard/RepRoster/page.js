@@ -94,7 +94,7 @@ useEffect(()=>{
     .then(data => {
         console.log(data)
         setMyLeagues(data)})
-},[])
+},[myLeagues])
 
 function handleDraft(event){
     event.preventDefault();
@@ -155,17 +155,17 @@ return(
     <h5 className="text-sky-950 font-rethink text-lg">Search for Candidates</h5>
     <form  onSubmit={searchCandidates}>
         <label>State's Abbreviation:</label>
-        <input className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 m-2" type="text" name="state" value={searchInfo.state} placeholder="CA, NY, FL eg." onChange={handleSearch}/>
+        <input className="border leading-tight text-sm rounded-lg  w-3/4 p-2 m-2" type="text" name="state" value={searchInfo.state} placeholder="CA, NY, FL eg." onChange={handleSearch}/>
         <br/>
         <label className='font-bolder p-2'>Office: </label>
-        <select className="rounded-lg p-2" name="office_held" value={searchInfo.office_held} onChange={handleSearch}>
+        <select className="rounded-lg bg-sky-100 p-2" name="office_held" value={searchInfo.office_held} onChange={handleSearch}>
             <option>Choose One</option>
             <option value="P">President</option>
             <option value="S">Senate</option>
             <option value="H">House of Representatives</option>
         </select>
         <label className='font-bolder p-2'>Party Affiliation: </label>
-        <select className="rounded-lg p-2" name="party" value={searchInfo.party} onChange={handleSearch}> 
+        <select className="rounded-lg bg-sky-100 p-2" name="party" value={searchInfo.party} onChange={handleSearch}> 
             <option>Choose One</option>
              <option value="DEM">Democratic</option>
             <option value="REP">Republican</option>
