@@ -81,6 +81,8 @@ def get_20_reps():
 
     return make_response(jsonify(short_rep_list), 200
                          )
+
+
 # post route for reps PAGINATED
 @app.get('/api/representatives/page/<int:pageNumber>')
 def get_reps_by_page(pageNumber:int):
@@ -435,9 +437,7 @@ def get_available_leagues(current_user):
 
 # get route to show a user's rosters per league
 @app.get("/api/<int:user_id>/league/roster")
-# @authorization_required  
 def get_rosters_by_league_test(user_id:int):
-    # logged_in_user = User.query.get(current_user["id"])
     logged_in_user = User.query.filter(User.id == user_id).first()
 
     draft_list = [draft for draft in logged_in_user.drafted]
@@ -462,13 +462,13 @@ def get_rosters_by_league_test(user_id:int):
     
     roster_ids = __candidate_multifilter(team, rep_id_list)
     print(roster_ids)
-    # roster_objects = []
-    # for id in roster_ids:
-    #     roster_objects.append(Reps.query.filter(id == Reps.id).first())
-    #     return roster_objects
-    # print(roster_objects)
-    # roster_list = [rep.to_dict() for rep in roster_objects]
-    # print(roster_list)
+    roster_objects = []
+    for id in roster_ids:
+        roster_objects.append(Reps.query.filter(id == Reps.id).first())
+        return roster_objects
+    print(roster_objects)
+    roster_list = [rep.to_dict() for rep in roster_objects]
+    print(roster_list)
     return make_response(jsonify(roster_ids), 200)
     
 

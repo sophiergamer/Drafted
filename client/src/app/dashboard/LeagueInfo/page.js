@@ -38,7 +38,7 @@ function createLeague(event){
 
 return(
 
-<div >
+<div className='p-4' >
   <div className='p-4 bg-sky-300 rounded-md m-2'>
     <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Your Leagues</h2>
     <br/>

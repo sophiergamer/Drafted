@@ -48,7 +48,7 @@ return(
     <div>
     <form className="font-rethink pl-2.5 w-full max-w bg-whiteish border border-slate-400 rounded-lg shadow " onSubmit={signUpUser}>
       <br/>
-    <h2 className='text-3xl p-2 m-2 '>Sign Up for<a className='font-trocchi text-4xl tracking-wider text-sky-900'> Drafted</a></h2>
+    <h2 className='text-3xl p-2 m-2 '>Sign Up for<a className='font-trocchi text-4xl tracking-wider text-sky-900'> DRAFTED</a></h2>
         <label className="form-label inline text-base m-2 text-slate">create a username</label>
         <input type='text' name="username" value={newUserData.username} onChange={handleSignUp} className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
