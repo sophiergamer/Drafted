@@ -119,7 +119,7 @@ return(
                 <option value={item.league.id} key={item.league.id}>{item.league.name}</option>
             )}
             </select>
-        <div className='grid grid-cols-3'>
+        <div className='grid grid-cols-4'>
             {filteredCandidates.map(candidate=>
                                 <MyCandidates
                                 key={candidate.id}
@@ -187,7 +187,7 @@ return(
         )}
         </select>
         </div>
-    <div className='grid grid-cols-3 p-2'>
+    <div className='grid grid-cols-4 p-2'>
      {allCandidates.map(candidate=>
                                     <AllCandidates key={candidate.id}
                                         rep_id={candidate.id}

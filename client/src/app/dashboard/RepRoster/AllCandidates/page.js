@@ -23,7 +23,7 @@ return(
         <Image className="w-full"
             src={photo}
             width={200}
-            height={100}
+            height={300}
             alt={name}
             priority={true}
             />

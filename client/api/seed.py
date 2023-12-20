@@ -25,7 +25,7 @@ def create_reps():
             state=rep["state"],
             party=rep["party"],
             district_number=rep["district_number"],
-            photo_url= "http://placekitten.com/200/300",
+            photo_url= "http://placekitten.com/400/400",
             seat_status=rep["seat_status"]
         )
         rep_list.append(cand_rep)

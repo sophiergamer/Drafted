@@ -52,7 +52,7 @@ return(
         <label className="form-label inline text-base m-2 text-slate">create a username</label>
         <input type='text' name="username" value={newUserData.username} onChange={handleSignUp} className="border leading-tight border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
-        <label className="form-label inline text-base m-2 text-slate">your first name</label>
+        <label className="form-label inline text-base m-2 text-slate">your name</label>
         <input type='text' name="name" value={newUserData.name} onChange={handleSignUp} className=" border border-slate text-slate text-sm rounded-lg  w-3/4 p-2 my-2"/>
         <br/>
         <label className="form-label inline text-base m-2 text-slate">your email </label>
