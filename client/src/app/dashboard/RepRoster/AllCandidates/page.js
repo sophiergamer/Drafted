@@ -4,6 +4,7 @@ import Image from "next/image"
 
 
 export default function AllCandidates({name, rep_id, office_held, state, district_number, seat_status, party, photo, newDraftData, myCandidates, setMyCandidates}){
+    
     function draftCandidate(event){
         event.preventDefault();
         fetch("/api/myaccount/draftedcandidates", {

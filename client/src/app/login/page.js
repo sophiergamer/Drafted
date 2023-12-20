@@ -51,7 +51,8 @@ return(
 <Image className="flex-auto p-7 rounded-full w-3/5 h-3/5" src={draftedCopy}
                   alt="logo"
                  height="500"
-                  width="500"/>
+                  width="500"
+                  priority={true}/>
 </div>
 </div>
 )

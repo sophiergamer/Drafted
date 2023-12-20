@@ -4,17 +4,16 @@ import MyCandidates from './MyCandidates/page'
 // import EditRoster from './SearchCandidates/page'
 import AllCandidates from './AllCandidates/page'
 
-export default function MyRoster(){
+export default function MyRoster({myLeagues}){
 const [myCandidates, setMyCandidates] = useState([])
 const [allCandidates, setAllCandidates] = useState([])
-const [myLeagues, setMyLeagues] = useState([])
 const [newDraftData, setNewDraftData] = useState({league_id:"", rep_id:""})
 const [pageNumber, setPageNumber] = useState(1)
 const [leagueRoster, setLeagueRoster] = useState([])
 const [leagueId, setLeagueId] = useState("1")
 const [searchInfo, setSearchInfo] = useState({state:"", office_held:"", party:""})
 
-
+/////////////////////////////////////SEARCH and LOAD REPS///////////////////////////////////////////////////
 function handleSearch(event){
     event.preventDefault();
     setSearchInfo({...searchInfo, [event.target.name]: event.target.value})
@@ -31,45 +30,6 @@ function searchCandidates(event){
     }).then(response=>response.json())
     .then(data=>setAllCandidates(data))
 }
-
-
-useEffect(()=>{
-    fetch("/api/myaccount/draftedcandidates")
-    .then(response => response.json())
-    .then(data => setMyCandidates(data))
-    }, [])
-
-// useEffect(()=>{
-//     fetch("/api/shortrepslist")
-//     .then(response=>response.json())
-//     .then(data=>setAllCandidates(data))
-// }, [])
-
-function changeLeague(event){
-    setLeagueId(event.target.name = event.target.value)
-    displayUpdatedRoster(event.target.value)
-    console.log(`This is back in time: ${leagueId}`)
-}
-
-
-function displayUpdatedRoster(leagueId) {
-    fetch(`/api/myaccount/${leagueId}/roster`)
-        .then(response => response.json())
-        .then(data => {
-            setLeagueRoster(leagueRoster)
-            console.log(`This is up-to-date: ${leagueId}`)
-        })
-}
-
-
-// useEffect(()=>{
-//     fetch(`/api/myaccount/${leagueId}/roster`)
-//     .then(response=> response.json())
-//     .then(data=> {
-//         setLeagueRoster([...leagueRoster, data])
-//     console.log(`This is up-to-date: ${leagueId}`)})
-// },[leagueId])
-
 
 useEffect(()=>{
     fetch(`/api/representatives/page/${pageNumber}`)
@@ -88,20 +48,64 @@ function prevPage(){
     setPageNumber(pageNumber - 1)}
 }
 
+
+////////////////////////////////////////////////ALL DRAFTED CANDIDATES////////////////////////////////
+
 useEffect(()=>{
-    fetch("/api/myaccount/leagues")
+    fetch("/api/myaccount/draftedcandidates")
     .then(response => response.json())
-    .then(data => {
-        console.log(data)
-        setMyLeagues(data)})
-},[myLeagues])
+    .then(data => setMyCandidates(data))
+    }, [])
+
+////////////////////////////////////////////CANDIDATE ROSTER BY LEAGUE//////////////////////////////////
+
+function changeLeague(event){
+    setLeagueId(event.target.name = event.target.value)
+    displayUpdatedRoster(event.target.value)
+    console.log(`This is back in time: ${leagueId}`)
+}
+
+
+function displayUpdatedRoster(leagueId) {
+    fetch(`/api/myaccount/${leagueId}/roster`)
+        .then(response => response.json())
+        .then(data => {
+            setLeagueRoster(data)
+            console.log(`This is up-to-date: ${leagueId}`)
+            console.log(leagueRoster)
+        })
+}
+const filteredCandidates = myCandidates.filter(item=>{
+    return leagueRoster==="Choose a League" || leagueRoster.includes(item.id)
+  })
+
+// function updateRoster(event){
+//     event.preventDefault();
+//     fetch("/api/myaccount/league/roster",{
+//         method:"POST",
+//         headers:{"Content-Type":"application/json"},
+//         body: JSON.stringify({"league_id":item.league.id})
+//     }).then(response=>response.json())
+//     .then(data=>setLeagueRoster(data))
+// }
+
+
+// useEffect(()=>{
+//     fetch(`/api/myaccount/${leagueId}/roster`)
+//     .then(response=> response.json())
+//     .then(data=> {
+//         setLeagueRoster([...leagueRoster, data])
+//     console.log(`This is up-to-date: ${leagueId}`)})
+// },[leagueId])
+
+/////////////////////////////////////////////SENDING LEAGUE INFO TO DRAFT POST ON OTHER PAGE/////////////////////
 
 function handleDraft(event){
     event.preventDefault();
     setNewDraftData({[event.target.name]: event.target.value})
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 return(
 <div>
     <div className='p-4 bg-sky-300 rounded-md m-2'>
@@ -110,12 +114,13 @@ return(
     <div>
         <div className='border-b-2 p-2'>
             <select className="rounded-lg p-1" name="leagueId" value={leagueId} onChange={changeLeague}>
+                <option>Choose a League</option>
             {myLeagues.map(item=>
                 <option value={item.league.id} key={item.league.id}>{item.league.name}</option>
             )}
             </select>
         <div className='grid grid-cols-3'>
-            {myCandidates.map(candidate=>(leagueRoster.includes(candidate.id))?
+            {filteredCandidates.map(candidate=>
                                 <MyCandidates
                                 key={candidate.id}
                                 id={candidate.id}
@@ -128,7 +133,6 @@ return(
                                 photo={candidate.photo_url}
                                 myCandidates={myCandidates}
                                 setMyCandidates={setMyCandidates}/>
-                                : null
                                )}
             </div>
  
@@ -177,6 +181,7 @@ return(
  <br/>                           
     <div className='p-2'>
     <select className="rounded-lg p-1" name="league_id" value={newDraftData.league_id} onChange={handleDraft}>
+    <option>Choose a League</option>
         {myLeagues.map(item=>
         <option value={item.league.id} key={item.league.id}>{item.league.name}</option>
         )}

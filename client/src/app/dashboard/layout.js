@@ -8,6 +8,15 @@ import About from './About/page'
 
 export default function DashboardLayout({ children }) {
   const [user, setUser] = useState({})
+  const [myLeagues, setMyLeagues] = useState([])
+
+  useEffect(()=>{
+      fetch("/api/myaccount/leagues")
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        setMyLeagues( data)})
+  },[])
 
   useEffect(()=>{
     fetch("/api/myaccount")
@@ -25,8 +34,11 @@ return(
             </span>
             <button className='p-3 m-3 bg-white outline-dashed outline-2 outline-red-600 rounded-lg '>Welcome, {user.name}!</button>
           <div className='flex p-5 flex-auto'>
-            <RepRoster/>
-            <LeagueInfo/>
+            <RepRoster myLeagues={myLeagues}
+                        setMyLeagues={setMyLeagues}
+                      />
+            <LeagueInfo myLeagues={myLeagues}
+                        setMyLeagues={setMyLeagues}/>
           </div>
            </div>
      {children}

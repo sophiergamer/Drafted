@@ -476,13 +476,13 @@ def get_rosters_by_league_test(user_id:int):
     
     roster_ids = __candidate_multifilter(team, rep_id_list)
     print(roster_ids)
-    roster_objects = []
-    for id in roster_ids:
-        roster_objects.append(Reps.query.filter(id == Reps.id).first())
-        return roster_objects
-    print(roster_objects)
-    roster_list = [rep.to_dict() for rep in roster_objects]
-    print(roster_list)
+    # roster_objects = []
+    # for id in roster_ids:
+    #     roster_objects.append(Reps.query.filter(id == Reps.id).first())
+    #     return roster_objects
+    # print(roster_objects)
+    # roster_list = [rep.to_dict() for rep in roster_objects]
+    # print(roster_list)
     return make_response(jsonify(roster_ids), 200)
     
 
@@ -522,6 +522,44 @@ def get_rosters_by_league(current_user, league_id:int):
     # roster_list = [rep.to_dict() for rep in roster_objects]
     # print(roster_list)
     return make_response(jsonify(roster_ids), 200)
+
+# # post to change league
+# @app.post("/api/myaccount/league/roster")
+# @authorization_required  
+# def get_rosters_by_league(current_user):
+#     logged_in_user = User.query.get(current_user["id"])
+
+#     draft_list = [draft for draft in logged_in_user.drafted]
+#     print(draft_list)
+#     rep_id_list = [draft.rep_id for draft in draft_list]
+#     print(rep_id_list)
+
+#     league_info = request.get_json()
+#     league_id = league_info["league_id"]
+
+#     this_league = League.query.filter(league_id== League.id).first()
+
+#     team = [member for member in this_league.recruited]
+#     print(team)
+
+#     def __candidate_multifilter(team, rep_id_list):
+#         league_roster_by_user = []
+#         for member in team:
+#             if member.rep_id in rep_id_list:
+#                 league_roster_by_user.append(member.rep_id)
+#         return league_roster_by_user
+    
+#     roster_ids = __candidate_multifilter(team, rep_id_list)
+#     print(roster_ids)
+#     # roster_objects = []
+#     # for id in roster_ids:
+#     #     roster_objects.append(Reps.query.filter(id == Reps.id).first())
+#     #     return roster_objects
+#     # print(roster_objects)
+#     # roster_list = [rep.to_dict() for rep in roster_objects]
+#     # print(roster_list)
+#     return make_response(jsonify(roster_ids), 200)
+
 
 # delete route to remove a candidate from a user's roster
 @app.delete('/api/myaccount/league/roster')
