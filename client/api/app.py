@@ -89,7 +89,7 @@ def get_20_reps():
 def get_reps_by_page(page_number:int):
     # page_data = request.get_json()
     # page = page_data['page']
-    reps_per_page = 30
+    reps_per_page = 8
     pagination = Reps.query.order_by(Reps.name).paginate(page=page_number, per_page=reps_per_page)
     pagination_list = [rep.to_dict() for rep in pagination]
 
@@ -127,7 +127,7 @@ def match_candidate_search_paginated(page_number:int):
     searched_item = request.get_json()
     state, office_held, party = searched_item["state"], searched_item["office_held"], searched_item["party"]
     print(office_held, party, state)
-    reps_per_page = 30
+    reps_per_page = 8
     filtered_by_state = Reps.query.filter(Reps.state == state, Reps.office_held==office_held, Reps.party==party).order_by(Reps.name).paginate(page=page_number, per_page=reps_per_page)
     print(filtered_by_state)
     list_of_candidates=[candidate.to_dict() for candidate in filtered_by_state]

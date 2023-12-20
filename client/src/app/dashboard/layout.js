@@ -29,7 +29,7 @@ return(
      <h1 className='font-trocchi p-3 font-bold text-7xl tracking-wider text-sky-900 underline underline-offset-8 decoration-dashed decoration-red-600'>DRAFTED</h1>
      <div >
           <span className="flex gap-4 m-3 font-mono font-bold text-sky-700 outline-1"> 
-                <About/>
+                {/* <About/> */}
                   <LogOut/>
             </span>
             <button className='p-3 m-3 bg-white outline-dashed outline-2 outline-red-600 rounded-lg '>Welcome, {user.name}!</button>

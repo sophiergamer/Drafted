@@ -14,7 +14,7 @@ def random_image():
     return random_photo_url
 
 def create_reps():
-    file = "./candidateData.json"
+    file = "./newCandidateData.json"
     rep_list= []
     with open(file) as json_data:
         reps = json.load(json_data)
@@ -25,7 +25,7 @@ def create_reps():
             state=rep["state"],
             party=rep["party"],
             district_number=rep["district_number"],
-            photo_url= "http://placekitten.com/400/400",
+            photo_url= rep["Link_Image"],
             seat_status=rep["seat_status"]
         )
         rep_list.append(cand_rep)
