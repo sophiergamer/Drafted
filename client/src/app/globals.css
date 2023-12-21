@@ -5,3 +5,59 @@
 @import url("https://fonts.googleapis.com/css2?family=Trocchi&display=swap");
 
 @import url("https://fonts.googleapis.com/css2?family=Rethink+Sans&display=swap");
+
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px; 
+    transform-origin: center bottom;
+    animation: fall 4s linear infinite;
+  }
+  
+  .confetti.square {
+    clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
+  }
+  .confetti.triangle {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  }
+  
+  @keyframes fall {
+    to {
+      transform: translateY(100vh) rotate(720deg);
+    }
+  }
+
+  .confetti.wavy-line {
+    position: relative;
+  }
+  .confetti.wavy-line::after,
+  .confetti.wavy-line::before {
+    content: "";
+    height: 10px;
+    width: 80px;
+    background-size: 20px 10px;
+    position: absolute;
+    left: -9rem;
+    transform: rotate(90deg);
+  }
+  
+  .confetti.wavy-line::before {
+    background-image: linear-gradient(
+      45deg,
+      transparent,
+      transparent 50%,
+      var(--bg) 50%,
+      transparent 60%
+    );
+    top: 1rem;
+  }
+  .confetti.wavy-line::after {
+    background-image: linear-gradient(
+      -45deg,
+      transparent,
+      transparent 50%,
+      var(--bg) 50%,
+      transparent 60%
+    );
+  }

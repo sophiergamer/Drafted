@@ -3,10 +3,11 @@ import Image from "next/image"
 
 
 
+export default function AllCandidates({name, handleClick, rep_id, office_held, state, district_number, seat_status, party, photo, newDraftData, myCandidates, setMyCandidates}){
+   
 
-export default function AllCandidates({name, rep_id, office_held, state, district_number, seat_status, party, photo, newDraftData, myCandidates, setMyCandidates}){
-    
     function draftCandidate(event){
+        handleClick();
         event.preventDefault();
         fetch("/api/myaccount/draftedcandidates", {
             method:"POST",
@@ -29,7 +30,7 @@ return(
             priority={true}
             />
         </div>
-        <div>
+        <div >
             <h4 className="font-trocchi p-2 capitalize">{name}</h4>
             <div className="text-xs">
             <h5>state: {state}</h5>
@@ -40,7 +41,7 @@ return(
             </div>
         </div>
         <button onClick={draftCandidate}  name="rep_id" 
-        className="bg-red-500 hover:bg-red-700 rounded-lg text-white p-2 m-2">Draft this Candidate</button>
+        className="bg-red-500 hover:bg-red-700 rounded-lg text-white p-2 m-2 ">Draft this Candidate</button>
 
 
 

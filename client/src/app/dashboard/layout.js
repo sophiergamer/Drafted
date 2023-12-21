@@ -6,9 +6,11 @@ import LogOut from './logout/page'
 import {useState, useEffect} from 'react'
 import About from './About/page'
 
+
 export default function DashboardLayout({ children }) {
   const [user, setUser] = useState({})
   const [myLeagues, setMyLeagues] = useState([])
+
 
   useEffect(()=>{
       fetch("/api/myaccount/leagues")
@@ -25,7 +27,7 @@ export default function DashboardLayout({ children }) {
 },[])
   
 return(
-<div>
+<div >
      <h1 className='font-trocchi p-3 font-bold text-7xl tracking-wider text-sky-900 underline underline-offset-8 decoration-dashed decoration-red-600'>DRAFTED</h1>
      <div >
           <span className="flex gap-4 m-3 font-mono font-bold text-sky-700 outline-1"> 
@@ -34,7 +36,9 @@ return(
             </span>
             <button className='p-3 m-3 bg-white outline-dashed outline-2 outline-red-600 rounded-lg '>Welcome, {user.name}!</button>
           <div className='flex p-5 flex-auto'>
-            <RepRoster myLeagues={myLeagues}
+      
+            <RepRoster  
+                        myLeagues={myLeagues}
                         setMyLeagues={setMyLeagues}
                       />
             <LeagueInfo myLeagues={myLeagues}
