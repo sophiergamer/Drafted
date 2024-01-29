@@ -422,19 +422,6 @@ def get_users_leagues(current_user):
     return make_response(jsonify(leagues), 200)
 
 
-# post route to join a league
-@app.post("/api/myaccount/joinleague")
-@authorization_required
-def join_league(current_user):
-    logged_in_user = User.query.get(current_user["id"])
-    league_data = request.get_json()
-    new_membership = Member(user_id = logged_in_user.id,
-                            league_id = league_data,
-                            is_creator = False)
-    db.session.add(new_membership)
-    db.session.commit()
-
-    return make_response(jsonify(new_membership.to_dict()),201)
 
 #get route to show all leagues available to user
 @app.get("/api/myaccount/leaguestojoin")
@@ -448,6 +435,20 @@ def get_available_leagues(current_user):
     available_leagues = find_outliers(all_leagues, my_memberships)
 
     return make_response(jsonify(available_leagues), 200)
+
+# post route to join a league
+@app.post("/api/myaccount/joinleague")
+@authorization_required
+def join_league(current_user):
+    logged_in_user = User.query.get(current_user["id"])
+    league_data = request.get_json()
+    new_membership = Member(user_id = logged_in_user.id,
+                            league_id = league_data,
+                            is_creator = False)
+    db.session.add(new_membership)
+    db.session.commit()
+
+    return make_response(jsonify(new_membership.to_dict()),201)
 
 # get route to show a user's rosters per league
 @app.get("/api/<int:user_id>/league/roster")

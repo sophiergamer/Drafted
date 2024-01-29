@@ -2,12 +2,19 @@
 import {useState, useEffect} from 'react'
 import CreateLeague from './createLeague/page'
 import LeagueDisplay from './leagueDisplay/page'
-// import JoinLeague from "./JoinLeague/page"
+import JoinLeague from "./JoinLeague/page"
 
 export default function LeagueInfo({myLeagues, setMyLeagues}){
-
-
+const [allLeagues, setAllLeagues] = useState([])
 const [leagueForm, setLeagueForm] = useState({name:""})
+
+useEffect(()=>{
+        fetch("/api/leagues")
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          setAllLeagues([...allLeagues, data])})
+    },[])
 
 function handleForm(event){
     event.preventDefault();
@@ -50,7 +57,9 @@ return(
 <br/>
     <div className='p-4 bg-sky-300 rounded-md m-2'>
         <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Join a League</h2> 
-{/* <JoinLeague/> */}
+<JoinLeague
+            allLeagues={allLeagues}
+            myLeagues={myLeagues}/>
     </div>
 </div>
 )

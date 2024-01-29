@@ -1,7 +1,7 @@
 "use client"
 import{useEffect, useState} from 'react'
 
-export default function JoinLeague(){
+export default function JoinLeague({allLeagues, myLeagues}){
 const [availableLeagues, setAvailableLeagues] = useState([])
 const [user, setUser] = useState({})
 
@@ -11,12 +11,9 @@ useEffect(()=>{
     .then(data=>setUser(data))
 },[])
 
-useEffect(()=>{
-    fetch("/api/myaccount/leaguestojoin")
-    .then(response => response.json())
-    .then(data=> setAvailableLeagues(data))
-}, [])
-
+function showAvailable(){setAvailableLeagues(allLeagues.filter(league=>{
+    return !myLeagues.includes(league.id)}
+  ))}
 
 // function RequestToJoin(id){
 //     fetch("/api/myaccount/joinleague",{
