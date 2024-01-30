@@ -8,13 +8,13 @@ export default function LeagueInfo({myLeagues, setMyLeagues}){
 const [allLeagues, setAllLeagues] = useState([])
 const [leagueForm, setLeagueForm] = useState({name:""})
 
-useEffect(()=>{
-        fetch("/api/leagues")
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          setAllLeagues([...allLeagues, data])})
-    },[])
+// useEffect(()=>{
+//         fetch("/api/leagues")
+//         .then(response => response.json())
+//         .then(data => {
+//           console.log(data)
+//           setAllLeagues([...allLeagues, data])})
+//     },[])
 
 function handleForm(event){
     event.preventDefault();
@@ -58,7 +58,7 @@ return(
     <div className='p-4 bg-sky-300 rounded-md m-2'>
         <h2 className='font-trocchi text-sky-900 text-xl tracking-wide' >Join a League</h2> 
 <JoinLeague
-            allLeagues={allLeagues}
+            // allLeagues={allLeagues}
             myLeagues={myLeagues}/>
     </div>
 </div>

@@ -1,9 +1,10 @@
 "use client"
 import{useEffect, useState} from 'react'
 
-export default function JoinLeague({allLeagues, myLeagues}){
-const [availableLeagues, setAvailableLeagues] = useState([])
+
+export default function JoinLeague({myLeagues}){
 const [user, setUser] = useState({})
+const [allLeagues, setAllLeagues] = useState([])
 
 useEffect(()=>{
     fetch("/api/myaccount")
@@ -11,9 +12,18 @@ useEffect(()=>{
     .then(data=>setUser(data))
 },[])
 
-function showAvailable(){setAvailableLeagues(allLeagues.filter(league=>{
-    return !myLeagues.includes(league.id)}
-  ))}
+useEffect(()=>{
+    fetch("/api/leagues")
+    .then(response=>response.json())
+    .then(data=>{
+        setAllLeagues([...allLeagues, data])
+        console.log(allLeagues)})
+},[])
+
+// const availableLeagues = allLeagues.filter(league=>{
+//     return myLeagues.includes(league.id)
+// }
+
 
 // function RequestToJoin(id){
 //     fetch("/api/myaccount/joinleague",{
@@ -26,13 +36,18 @@ function showAvailable(){setAvailableLeagues(allLeagues.filter(league=>{
 
 return(
 <div>
-    {availableLeagues.map(league=> 
-    <div className="p-2 bg-sky-700 rounded-lg m-3 text-sky-200">
-        <h3 className="text-xl font-sans tracking-wide p-2 mt-1 mr-1 ml-1">{league.name}</h3>
-        <button className="bg-red-500 hover:bg-red-700 ml-4 mt-1 mb-1 p-2 rounded-lg text-white"
-         onClick={RequestToJoin(league.id)}>Request to Join</button>
-    </div>
-    )}
+    <ul>
+        {allLeagues.map(league=>
+        <li key={league.id} className="bg-sky-800 text-white text-center p-2 m-1 rounded-lg mb-2">
+            {league.name}
+        </li>
+        )}
+    </ul>
+
+        {/* <button className="bg-red-500 hover:bg-red-700 ml-4 mt-1 mb-1 p-2 rounded-lg text-white" */}
+    {/* //      onClick={RequestToJoin(league.id)}>Request to Join</button> */}
+     
+    
     </div>
 
 )
